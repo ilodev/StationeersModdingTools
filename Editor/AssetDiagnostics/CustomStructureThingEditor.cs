@@ -21,7 +21,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
             if (structureThing == null)
                 return defaultHidden;
 
-            if (structureThing.BuildStates != null && structureThing.BuildStates.Count == 0)
+            if (structureThing.BuildStates != null || structureThing.BuildStates.Count == 0)
             {
                 EditorGUILayout.HelpBox("This Structure needs at least one BuildState defined.", MessageType.Error);
             }
