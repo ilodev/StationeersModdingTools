@@ -1,0 +1,16 @@
+{
+  "name": "ilodev.stationeersmods.tools",
+  "version": "0.0.1",
+  "displayName": "Stationeers Modding Tools",
+  "description": "A collection of tool to help creating mods for Stationeers.",
+  "unity": "2022.3",
+  "keywords": [
+    "unity",
+    "editor",
+    "tools"
+  ],
+  "author": {
+    "name": "Inaki",
+    "url": "https://www.youtube.com/@yonoqueriacuenta"
+  }
+}
