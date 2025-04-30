@@ -1,0 +1,19 @@
+{
+    "name": "ilodev.stationeersmods.tools.visualizers",
+    "rootNamespace": "ilodev.stationeersmods.tools.visualizers",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Assembly-CSharp.dll",
+        "Assembly-CSharp-firstpass.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
