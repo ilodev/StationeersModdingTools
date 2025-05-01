@@ -24,6 +24,12 @@ namespace ilodev.stationeersmods.tools.visualizers
                 Transform slotTransform = GetSlotTransform(thing, interactable.Action);
                 Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
 
+                Vector3 size = interactable.Bounds.size;
+                if (interactable.Collider != null && size == Vector3.zero)
+                {
+                    size = interactable.Collider.bounds.size;
+                }
+
                 if (interactable.Collider != null)
                 {
                     position += interactable.Collider.transform.position;
@@ -38,19 +44,19 @@ namespace ilodev.stationeersmods.tools.visualizers
                 {
                     WithHandlesMatrix(Matrix4x4.TRS(position, interactable.Collider.transform.rotation, Vector3.one), () =>
                     {
-                        Handles.DrawWireCube(Vector3.zero, interactable.Bounds.size);
+                        Handles.DrawWireCube(Vector3.zero, size);
                     });
                 }
                 else if (slotTransform != null)
                 {
                     WithHandlesMatrix(Matrix4x4.TRS(position, slotTransform.rotation, Vector3.one), () =>
                     {
-                        Handles.DrawWireCube(Vector3.zero, interactable.Bounds.size);
+                        Handles.DrawWireCube(Vector3.zero, size);
                     });
                 }
                 else
                 {
-                    Handles.DrawWireCube(position, interactable.Bounds.size);
+                    Handles.DrawWireCube(position, size);
                 }
 
                 // Draw label
