@@ -10,6 +10,10 @@ namespace ilodev.stationeersmods.tools.visualizers
     {
         public void OnSceneGUI(SceneView sceneView, Object target)
         {
+
+            if (!EditorPrefs.GetBool("Visualizer.GridBounds", true))
+                return;
+
             Structure structure = target as Structure;
             if (structure == null)
                 return;
@@ -21,7 +25,7 @@ namespace ilodev.stationeersmods.tools.visualizers
             float gridRatio = structure.BoundsGridRatio;
 
             Vector3 bounds = new Vector3(gridSize, gridSize, gridSize);
-            Handles.color = new Color(0f, 1f, 1f, 0.2f); // cyan, semi-transparent
+            Handles.color = new Color(0f, 1f, 1f, 0.3f); // cyan, semi-transparent
             Handles.DrawWireCube(structure.transform.position, bounds * gridRatio);
 
             /*

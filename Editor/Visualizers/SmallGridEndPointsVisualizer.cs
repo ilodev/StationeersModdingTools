@@ -9,6 +9,9 @@ namespace ilodev.stationeersmods.tools.visualizers
     {
         public void OnSceneGUI(SceneView sceneView, Object target)
         {
+            if (!EditorPrefs.GetBool("Visualizer.Endpoints", true))
+                return;
+
             SmallGrid smallGrid = target as SmallGrid;
             if (smallGrid == null)
                 return;
