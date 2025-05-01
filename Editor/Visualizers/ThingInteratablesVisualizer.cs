@@ -27,9 +27,8 @@ namespace ilodev.stationeersmods.tools.visualizers
 
                 Vector3 size = interactable.Bounds.size;
                 // Not a valid interactable?
-                if (interactable.Collider == null && size == Vector3.zero)
-                    return;
-
+                //if (interactable.Collider == null && size == Vector3.zero)
+                //    return;
 
                 if (interactable.Collider != null && size == Vector3.zero)
                 {
