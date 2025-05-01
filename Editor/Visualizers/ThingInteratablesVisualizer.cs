@@ -1,3 +1,4 @@
+using System;
 using Assets.Scripts.Objects;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace ilodev.stationeersmods.tools.visualizers
 {
     public class ThingInteratablesVisualizer : IThingVisualizer
     {
-        public void OnSceneGUI(SceneView sceneView, Object target)
+        public void OnSceneGUI(SceneView sceneView, UnityEngine.Object target)
         {
             if (!EditorPrefs.GetBool("Visualizer.Interactables", true))
                 return;
@@ -22,8 +23,35 @@ namespace ilodev.stationeersmods.tools.visualizers
                 Handles.color = new Color(1.0f, 0.5f, 0.9f, 1.0f); // Purple
                 Transform slotTransform = GetSlotTransform(thing, interactable.Action);
                 Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
-                if (slotTransform != null) position += slotTransform.position;
-                Handles.DrawWireCube(position, interactable.Bounds.size);
+
+                if (interactable.Collider != null)
+                {
+                    position += interactable.Collider.transform.position;
+                }
+                else
+                {
+                    if (slotTransform != null) position += slotTransform.position;
+
+                }
+
+                if (interactable.Collider != null)
+                {
+                    WithHandlesMatrix(Matrix4x4.TRS(position, interactable.Collider.transform.rotation, Vector3.one), () =>
+                    {
+                        Handles.DrawWireCube(Vector3.zero, interactable.Bounds.size);
+                    });
+                }
+                else if (slotTransform != null)
+                {
+                    WithHandlesMatrix(Matrix4x4.TRS(position, slotTransform.rotation, Vector3.one), () =>
+                    {
+                        Handles.DrawWireCube(Vector3.zero, interactable.Bounds.size);
+                    });
+                }
+                else
+                {
+                    Handles.DrawWireCube(position, interactable.Bounds.size);
+                }
 
                 // Draw label
                 Handles.color = Color.white;
@@ -32,6 +60,14 @@ namespace ilodev.stationeersmods.tools.visualizers
                 string text = $"<color=#FFFFFF><b>{interactable.DisplayName.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
                 Handles.Label(position + Vector3.up * 0.1f, text, boldLabel);
             }
+        }
+
+        void WithHandlesMatrix(Matrix4x4 matrix, Action drawAction)
+        {
+            var oldMatrix = Handles.matrix;
+            Handles.matrix = matrix;
+            drawAction();
+            Handles.matrix = oldMatrix;
         }
 
         Transform GetSlotTransform(Thing thing, InteractableType interactableType)
