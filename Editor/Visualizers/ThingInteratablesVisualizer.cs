@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.Drawing;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
@@ -25,6 +26,10 @@ namespace ilodev.stationeersmods.tools.visualizers
                 Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
 
                 Vector3 size = interactable.Bounds.size;
+                // Not a valid interactable?
+                if (interactable.Collider == null && size == Vector3.zero)
+                    return;
+
                 if (interactable.Collider != null && size == Vector3.zero)
                 {
                     size = interactable.Collider.bounds.size;
