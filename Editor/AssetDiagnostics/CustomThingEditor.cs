@@ -79,7 +79,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
 
             int result = 0;
 
-            Thing thing = (Thing)target;
+            Thing thing = target as Thing;
             if (thing == null)
                 return result;
 

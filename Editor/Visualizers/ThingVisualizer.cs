@@ -55,17 +55,24 @@ namespace ilodev.stationeersmods.tools.visualizers
                         visualizer.OnSceneGUI(sceneView, container);
                     }
                 }
-
+                
                 // In regular scene — skip prefabs not in the active scene
                 else
                 {
                     if (!container.gameObject.scene.isLoaded)
                         continue;
 
-                    foreach (var visualizer in m_ThingVisualizers)
+                    SerializedObject so = new SerializedObject(container.gameObject);
+                    SerializedProperty isActiveProp = so.FindProperty("m_IsActive");
+                    if (isActiveProp.boolValue == true)
                     {
-                        visualizer.OnSceneGUI(sceneView, container);
+                        foreach (var visualizer in m_ThingVisualizers)
+                        {
+                            visualizer.OnSceneGUI(sceneView, container);
+                        }
+
                     }
+                  
                 }
             }
         }

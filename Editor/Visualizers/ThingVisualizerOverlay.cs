@@ -17,6 +17,8 @@ namespace ilodev.stationeersmods.tools.visualizers
             // Add toggles for each visualizer have
             root.Add(CreateToggle("End Points", "Visualizer.Endpoints", true));
             root.Add(CreateToggle("Grid Bounds", "Visualizer.GridBounds", true));
+            root.Add(CreateToggle("Large Grid Bounds", "Visualizer.LargeGridBounds", true));
+            root.Add(CreateToggle("Small Grid Bounds", "Visualizer.SmallGridBounds", true));
             root.Add(CreateToggle("Interactables", "Visualizer.Interactables", true));
 
             return root;
