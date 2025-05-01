@@ -63,7 +63,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                 Handles.color = Color.white;
                 GUIStyle boldLabel = new GUIStyle(EditorStyles.label);
                 boldLabel.richText = true;
-                string text = $"<color=#FFFFFF><b>{interactable.DisplayName.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
+                string text = $"<color=#FFFFFF><b>{interactable.StringKey.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
                 Handles.Label(position + Vector3.up * 0.1f, text, boldLabel);
             }
         }
