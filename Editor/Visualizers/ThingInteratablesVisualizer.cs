@@ -21,7 +21,8 @@ namespace ilodev.stationeersmods.tools.visualizers
             {
                 Handles.color = new Color(1.0f, 0.5f, 0.9f, 1.0f); // Purple
                 Transform slotTransform = GetSlotTransform(thing, interactable.Action);
-                Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position + slotTransform.position;
+                Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
+                if (slotTransform != null) position += slotTransform.position;
                 Handles.DrawWireCube(position, interactable.Bounds.size);
 
                 // Draw label
@@ -29,7 +30,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                 GUIStyle boldLabel = new GUIStyle(EditorStyles.label);
                 boldLabel.richText = true;
                 string text = $"<color=#FFFFFF><b>{interactable.DisplayName.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
-                Handles.Label(interactable.Parent.transform.position + Vector3.up * 0.1f, text, boldLabel);
+                Handles.Label(position + Vector3.up * 0.1f, text, boldLabel);
             }
         }
 
