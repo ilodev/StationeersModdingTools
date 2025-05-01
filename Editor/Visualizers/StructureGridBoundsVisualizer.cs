@@ -2,6 +2,7 @@ using Assets.Scripts.Objects;
 using System.ComponentModel;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
@@ -17,11 +18,16 @@ namespace ilodev.stationeersmods.tools.visualizers
             Color color = Color.gray;
             float gridSize = structure.GridSize;
             float gridOffset = structure.GridOffset;
+            float gridRatio = structure.BoundsGridRatio;
 
+            Vector3 bounds = new Vector3(gridSize, gridSize, gridSize);
+            Handles.color = new Color(0f, 1f, 1f, 0.2f); // cyan, semi-transparent
+            Handles.DrawWireCube(structure.transform.position, bounds * gridRatio);
+
+            /*
             // Define grid bounds (for example: 5x5 grid centered on object)
             int gridExtent = 3;
 
-            Handles.color = new Color(0f, 1f, 1f, 0.2f); // cyan, semi-transparent
 
             Vector3 center = structure.transform.position;
 
@@ -38,6 +44,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                     Handles.SphereHandleCap(0, point, Quaternion.identity, 0.1f, EventType.Repaint);
                 }
             }
+            */
         }
     }
 }

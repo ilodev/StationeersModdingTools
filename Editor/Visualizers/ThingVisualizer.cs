@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Assets.Scripts.Objects;
 using System.Linq;
 using System;
+using UnityEditor.SceneManagement;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
@@ -28,7 +29,7 @@ namespace ilodev.stationeersmods.tools.visualizers
             m_ThingVisualizers = list.ToArray();
         }
 
-            // Static constructor subscribes to SceneView callback
+        // Static constructor subscribes to SceneView callback
         static ThingVisualizer()
         {
             CollectVisualizers();
@@ -37,13 +38,34 @@ namespace ilodev.stationeersmods.tools.visualizers
 
         private static void OnSceneGUI(SceneView sceneView)
         {
-            Thing[] containers = GameObject.FindObjectsOfType<Thing>();
+            Thing[] containers = Resources.FindObjectsOfTypeAll<Thing>();
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
 
             foreach (var container in containers)
             {
-                foreach(var visualizer in m_ThingVisualizers)
+                // In Prefab Mode — only draw objects in the prefab scene
+                if (prefabStage != null)
                 {
-                    visualizer.OnSceneGUI(sceneView, container);
+                    if (container.gameObject.scene != prefabStage.scene)
+                        continue;
+
+                    foreach (var visualizer in m_ThingVisualizers)
+                    {
+                        visualizer.OnSceneGUI(sceneView, container);
+                    }
+                }
+
+                // In regular scene — skip prefabs not in the active scene
+                else
+                {
+                    if (!container.gameObject.scene.isLoaded)
+                        continue;
+
+                    foreach (var visualizer in m_ThingVisualizers)
+                    {
+                        visualizer.OnSceneGUI(sceneView, container);
+                    }
                 }
             }
         }
