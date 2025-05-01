@@ -21,7 +21,7 @@ namespace ilodev.stationeersmods.tools.visualizers
 
             foreach (Interactable interactable in thing.Interactables)
             {
-                Handles.color = new Color(1.0f, 0.5f, 0.9f, 1.0f); // Purple
+                Handles.color = new UnityEngine.Color(1.0f, 0.5f, 0.9f, 1.0f); // Purple
                 Transform slotTransform = GetSlotTransform(thing, interactable.Action);
                 Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
 
@@ -29,6 +29,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                 // Not a valid interactable?
                 if (interactable.Collider == null && size == Vector3.zero)
                     return;
+
 
                 if (interactable.Collider != null && size == Vector3.zero)
                 {
@@ -65,7 +66,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                 }
 
                 // Draw label
-                Handles.color = Color.white;
+                Handles.color = UnityEngine.Color.white;
                 GUIStyle boldLabel = new GUIStyle(EditorStyles.label);
                 boldLabel.richText = true;
                 string text = $"<color=#FFFFFF><b>{interactable.StringKey.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
