@@ -26,14 +26,16 @@ namespace ilodev.stationeersmods.tools.visualizers
                 Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
 
                 Vector3 size = interactable.Bounds.size;
-                // Not a valid interactable?
-                //if (interactable.Collider == null && size == Vector3.zero)
-                //    return;
 
+                // override size with collider size
                 if (interactable.Collider != null && size == Vector3.zero)
                 {
                     size = interactable.Collider.bounds.size;
                 }
+
+                // No size at the end, no need to display
+                if (size == Vector3.zero)
+                    continue;
 
                 if (interactable.Collider != null)
                 {
@@ -42,7 +44,6 @@ namespace ilodev.stationeersmods.tools.visualizers
                 else
                 {
                     if (slotTransform != null) position += slotTransform.position;
-
                 }
 
                 if (interactable.Collider != null)
@@ -65,10 +66,10 @@ namespace ilodev.stationeersmods.tools.visualizers
                 }
 
                 // Draw label
-                Handles.color = UnityEngine.Color.white;
                 GUIStyle boldLabel = new GUIStyle(EditorStyles.label);
                 boldLabel.richText = true;
                 string text = $"<color=#FFFFFF><b>{interactable.StringKey.ToString()}</b></color>\r\n{interactable.Action.ToString()}";
+                Handles.color = UnityEngine.Color.white;
                 Handles.Label(position, text, boldLabel);
             }
         }

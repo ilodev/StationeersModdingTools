@@ -49,9 +49,9 @@ namespace ilodev.stationeersmods.tools.visualizers
 
                 Handles.ArrowHandleCap(
                     0, 
-                    openEnd.Transform.position, // position at which to draw the arrow
+                    openEnd.Transform.position - openEnd.Transform.forward * 0.1f, // position at which to draw the arrow
                     Quaternion.LookRotation(openEnd.Transform.forward), // rotation for the arrow
-                    0.1f, // size of the arrow
+                    0.2f, // size of the arrow
                     EventType.Repaint // always Repaint for scene GUI
                 );
 
@@ -61,6 +61,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                 boldLabel.richText = true;
                 string text = $"<color=#FFFFFF><b>{openEnd.ConnectionType.ToString()}</b></color>\r\n{openEnd.ConnectionRole.ToString()}";
                 Handles.Label(openEnd.Transform.position + Vector3.up * 0.1f, text, boldLabel);
+
             }
         }
     }
