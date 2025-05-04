@@ -41,7 +41,7 @@ namespace ilodev.stationeersmods.tools.visualizers
 
                 if (slot.Collider != null)
                 {
-                    position += slot.Collider.center;
+                    position = slot.Collider.bounds.center;
                 }
 
                 if (slot.Location != null)

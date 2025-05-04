@@ -22,9 +22,9 @@ namespace ilodev.stationeersmods.tools.visualizers
             foreach (Interactable interactable in thing.Interactables)
             {
                 Handles.color = new UnityEngine.Color(1.0f, 0.5f, 0.9f, 1.0f); // Purple
-                Transform slotTransform = GetSlotTransform(thing, interactable.Action);
-                Vector3 position = interactable.Bounds.center + interactable.Parent.transform.position;
 
+
+                Vector3 position = interactable.Bounds.center;/// + interactable.Parent.transform.position;
                 Vector3 size = interactable.Bounds.size;
 
                 // override size with collider size
@@ -37,15 +37,18 @@ namespace ilodev.stationeersmods.tools.visualizers
                 if (size == Vector3.zero)
                     continue;
 
+                Transform slotTransform = GetSlotTransform(thing, interactable.Action);
+
                 if (interactable.Collider != null)
                 {
-                    position += interactable.Collider.transform.position;
+                    position = interactable.Collider.bounds.center;
                 }
                 else
                 {
                     if (slotTransform != null) position += slotTransform.position;
                 }
 
+                
                 if (interactable.Collider != null)
                 {
                     WithHandlesMatrix(Matrix4x4.TRS(position, interactable.Collider.transform.rotation, Vector3.one), () =>
