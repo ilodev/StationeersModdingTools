@@ -30,7 +30,7 @@ namespace ilodev.stationeersmods.tools.visualizers
             // Get grid cells
             Vector3Int[] gridCells = GetSmallGridCellsForStructure(structure, GridSize);
 
-            // Instantiate the prefab at each grid location
+            // draw a cube in each cell location
             foreach (Vector3Int gridIndex in gridCells)
             {
                 // Convert the grid index to world position
@@ -38,9 +38,58 @@ namespace ilodev.stationeersmods.tools.visualizers
 
                 Handles.color = new Color(1.0f, 0f, 0f, 0.5f); // red
                 Handles.DrawWireCube(worldPos, Vector3.one * GridSize);
+
+                Color fill = new Color(1f, 0f, 0f, 0.1f);   // Red, 30% alpha
+                Color outline = Color.red;
+                DrawSolidCube(worldPos, GridSize, fill, outline);
+
             }
 
         }
+
+        public static void DrawSolidCube(Vector3 center, float size, Color faceColor, Color outlineColor)
+        {
+            Vector3 halfSize = Vector3.one * (size * 0.5f);
+
+            // Define the 8 corners of the cube
+            Vector3[] corners = new Vector3[8];
+            corners[0] = center + new Vector3(-halfSize.x, -halfSize.y, -halfSize.z);
+            corners[1] = center + new Vector3(halfSize.x, -halfSize.y, -halfSize.z);
+            corners[2] = center + new Vector3(halfSize.x, -halfSize.y, halfSize.z);
+            corners[3] = center + new Vector3(-halfSize.x, -halfSize.y, halfSize.z);
+            corners[4] = center + new Vector3(-halfSize.x, halfSize.y, -halfSize.z);
+            corners[5] = center + new Vector3(halfSize.x, halfSize.y, -halfSize.z);
+            corners[6] = center + new Vector3(halfSize.x, halfSize.y, halfSize.z);
+            corners[7] = center + new Vector3(-halfSize.x, halfSize.y, halfSize.z);
+
+            // Define each face by its 4 corners (order matters for proper winding)
+            int[][] faces = new int[][]
+            {
+            new int[]{0, 1, 2, 3}, // Bottom
+            new int[]{7, 6, 5, 4}, // Top
+            new int[]{4, 5, 1, 0}, // Front
+            new int[]{6, 7, 3, 2}, // Back
+            new int[]{5, 6, 2, 1}, // Right
+            new int[]{7, 4, 0, 3}, // Left
+            };
+
+            // Draw each face
+            foreach (var face in faces)
+            {
+                Handles.DrawSolidRectangleWithOutline(
+                    new Vector3[]
+                    {
+                    corners[face[0]],
+                    corners[face[1]],
+                    corners[face[2]],
+                    corners[face[3]]
+                    },
+                    faceColor,
+                    outlineColor
+                );
+            }
+        }
+
 
         public static void CachePrefabBounds(Structure structure)
         {
