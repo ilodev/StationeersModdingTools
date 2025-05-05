@@ -103,8 +103,8 @@ namespace ilodev.stationeersmods.tools.visualizers
             structure.Bounds.extents = Vector3.zero;
             foreach (Renderer renderer in structure.GetComponentsInChildren<Renderer>())
             {
-                if (!renderer.CompareTag("UIHelper"))
-                    structure.Bounds.Encapsulate(renderer.bounds);
+                //if (!renderer.CompareTag("UIHelper"))
+                structure.Bounds.Encapsulate(renderer.bounds);
             }
             structure.ThingTransform.SetPositionAndRotation(position, rotation);
             structure.SurfaceArea = (float)(2.0 * ((double)structure.Bounds.size.x * (double)structure.Bounds.size.y + (double)structure.Bounds.size.y * (double)structure.Bounds.size.z + (double)structure.Bounds.size.z * (double)structure.Bounds.size.x)) * structure.SurfaceAreaScale;
