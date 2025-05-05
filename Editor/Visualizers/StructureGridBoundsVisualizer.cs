@@ -18,37 +18,24 @@ namespace ilodev.stationeersmods.tools.visualizers
             if (structure == null)
                 return;
 
-            // Set color based on endpoint type
-            Color color = Color.gray;
-            float gridSize = structure.GridSize;
-            float gridOffset = structure.GridOffset;
-            float gridRatio = structure.BoundsGridRatio;
-
-            Vector3 bounds = new Vector3(gridSize, gridSize, gridSize);
-            Handles.color = new Color(0f, 1f, 1f, 0.3f); // cyan, semi-transparent
-            Handles.DrawWireCube(structure.transform.position, bounds * gridRatio);
-
-            /*
-            // Define grid bounds (for example: 5x5 grid centered on object)
-            int gridExtent = 3;
-
-
             Vector3 center = structure.transform.position;
+            Vector3 size = Vector3.zero;
 
-            for (int x = -gridExtent; x <= gridExtent; x++)
+            if (structure.Bounds.size == Vector3.zero)
             {
-                for (int z = -gridExtent; z <= gridExtent; z++)
-                {
-                    // Calculate grid point position with offset
-                    float px = center.x + (x * gridSize) + gridOffset;
-                    float pz = center.z + (z * gridSize) + gridOffset;
-                    Vector3 point = new Vector3(px, center.y, pz);
-
-                    // Draw small sphere at grid point
-                    Handles.SphereHandleCap(0, point, Quaternion.identity, 0.1f, EventType.Repaint);
-                }
+                float gridSize = structure.GridSize;
+                float gridRatio = structure.BoundsGridRatio;
+                size = Vector3.one * gridSize * gridRatio;
             }
-            */
+            else
+            {
+                center += structure.Bounds.center;
+                size = structure.Bounds.size;
+            }
+
+            // Set color based on endpoint type
+            Handles.color = new Color(0f, 1f, 1f, 0.3f); // cyan, semi-transparent
+            Handles.DrawWireCube(center, size);
         }
     }
 }
