@@ -23,6 +23,7 @@ namespace ilodev.stationeersmods.tools.visualizers
             if (structure == null)
                 return;
 
+            // Recalculate bounds if missing
             if (structure.Bounds.size == Vector3.zero)
                 CachePrefabBounds(structure);
 
@@ -79,6 +80,13 @@ namespace ilodev.stationeersmods.tools.visualizers
             worldMax.z += worldMax.z * structure.BoundsGridExtraForward;
             worldMax.z += worldMax.z * structure.BoundsForward;
             worldMax.z += structure.BoundsGridShiftForward;
+
+            // Apply the structure's transform position to adjust the grid
+            Vector3 transformPosition = structure.transform.position;
+
+            // Shift the world min and max by the structure's world position
+            worldMin += transformPosition;
+            worldMax += transformPosition;
 
             Vector3Int gridMin = WorldToGridPosition(worldMin, cellSize);
             Vector3Int gridMax = WorldToGridPosition(worldMax, cellSize);
