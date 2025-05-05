@@ -30,6 +30,14 @@ namespace ilodev.stationeersmods.tools.visualizers
                         color = Color.yellow;
                         break;
 
+                    case NetworkType.PipeLiquid:
+                        color = Color.blue;
+                        break;
+
+                    case NetworkType.Chute:
+                        color = Color.gray;
+                        break;
+
                     case NetworkType.Power:
                     case NetworkType.Data:
                     case NetworkType.PowerAndData:
