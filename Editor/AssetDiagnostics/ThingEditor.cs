@@ -2,24 +2,36 @@ using Assets.Scripts.Objects;
 using System.Collections.Generic;
 using System;
 using UnityEditor;
-using UnityEngine;
 using System.Linq;
 using Assets.Scripts.Util;
 
 namespace ilodev.stationeersmods.tools.diagnostics
 {
-
-    [CustomEditor(typeof(Thing), true)] // Works for all classes inheriting Thing
+    /// <summary>
+    /// Custom editor class for all classes inheriting Thing. This class will 
+    /// collect all other editors and call them appropriately (there can only be
+    /// one custom editor for each class type).
+    /// </summary>
+    [CustomEditor(typeof(Thing), true)] 
     public class ThingEditor : Editor
     {
+        /// <summary>
+        /// List of editors to be called before the original one.
+        /// </summary>
         private IThingEditor[] m_beforeEditors;
+
+        /// <summary>
+        /// List of editors to be called after the original one.
+        /// </summary>
         private IThingEditor[] m_afterEditors;
 
+        /// <summary>
+        /// Register itself to the Editor update event.
+        /// </summary>
         private void OnEnable()
         {
             CollectEditors();
             OnEnableEditors();
-
             EditorApplication.update += OnUpdateEditors;
         }
 
@@ -43,7 +55,10 @@ namespace ilodev.stationeersmods.tools.diagnostics
                 .Where(t => t.Type == EditorType.After)
                 .ToArray();
         }
-        
+
+        /// <summary>
+        /// Enable all editors
+        /// </summary>
         private void OnEnableEditors()
         {
             foreach (var editor in m_beforeEditors)
@@ -52,13 +67,18 @@ namespace ilodev.stationeersmods.tools.diagnostics
                 editor.OnEnable(target);
         }
 
+        /// <summary>
+        /// Deregister from the Editor update event.
+        /// </summary>
         private void OnDisable()
         {
             OnDisableEditors();
-
             EditorApplication.update -= OnUpdateEditors;
         }
 
+        /// <summary>
+        /// Disable all editors
+        /// </summary>
         private void OnDisableEditors()
         {
             foreach (var editor in m_beforeEditors)
@@ -67,6 +87,9 @@ namespace ilodev.stationeersmods.tools.diagnostics
                 editor.OnDisable(target);
         }
 
+        /// <summary>
+        /// Run Update on all editors, mark dirty as appropriate
+        /// </summary>
         private void OnUpdateEditors()
         {
             int setDirty = 0;
@@ -78,6 +101,10 @@ namespace ilodev.stationeersmods.tools.diagnostics
                 EditorUtility.SetDirty(target);
         }
 
+        /// <summary>
+        /// Call all Before inspector GUI, and decide if the original 
+        /// inspector needs to be called. 
+        /// </summary>
         public override void OnInspectorGUI()
         {
             int result = OnInspectorGUIBefore();
