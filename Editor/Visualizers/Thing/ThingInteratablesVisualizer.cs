@@ -77,6 +77,11 @@ namespace ilodev.stationeersmods.tools.visualizers
             }
         }
 
+        /// <summary>
+        /// Draw a square rotated
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="drawAction"></param>
         void WithHandlesMatrix(Matrix4x4 matrix, Action drawAction)
         {
             var oldMatrix = Handles.matrix;

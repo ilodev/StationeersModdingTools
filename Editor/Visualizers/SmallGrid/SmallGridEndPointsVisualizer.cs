@@ -5,25 +5,29 @@ using UnityEngine.UIElements;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
-
+    /// <summary>
+    /// Class to visualize OpenEnd connections
+    /// </summary>
     public class SmallGridEndPointsVisualizer : IThingVisualizer
     {
         public void OnSceneGUI(SceneView sceneView, Object target)
         {
-            if (!EditorPrefs.GetBool("Visualizer.Endpoints", true))
+            if (!EditorPrefs.GetBool("Visualizer.OpenEnds", true))
                 return;
 
+            // Only SmalGrid structures have OpenEnds
             SmallGrid smallGrid = target as SmallGrid;
             if (smallGrid == null)
                 return;
 
             foreach (var openEnd in smallGrid.OpenEnds)
             {
+                // If there is transform, then it is probably a misconfigured OpenEnd
                 if (openEnd == null || openEnd.Transform == null)
                     continue;
 
-                Color color = Color.green;
-
+                // Set color based on endpoint type
+                Color color;
                 switch (openEnd.ConnectionType )
                 {
                     case NetworkType.Pipe:
@@ -44,17 +48,19 @@ namespace ilodev.stationeersmods.tools.visualizers
                         color = Color.red;
                         break;
 
+                    // Any complex combination, or by default use Green color.
                     default:
                         color = Color.green;
                         break;
                 }
+                Handles.color = new Color(color.r, color.g, color.b, 0.6f);
 
+                // TODO: Move all this drawing to the drawing util
 
-                // Set color based on endpoint type
-                Handles.color = color;
-
+                // Make a small colored sphere
                 Handles.SphereHandleCap(0, openEnd.Transform.position, Quaternion.identity, 0.1f, EventType.Repaint);
 
+                // Draw a small colord arrow
                 Handles.ArrowHandleCap(
                     0, 
                     openEnd.Transform.position - openEnd.Transform.forward * 0.1f, // position at which to draw the arrow
@@ -63,13 +69,12 @@ namespace ilodev.stationeersmods.tools.visualizers
                     EventType.Repaint // always Repaint for scene GUI
                 );
 
-                // Draw label
+                // Draw a label
                 Handles.color = Color.white;
                 GUIStyle boldLabel = new GUIStyle(EditorStyles.label);
                 boldLabel.richText = true;
                 string text = $"<color=#FFFFFF><b>{openEnd.ConnectionType.ToString()}</b></color>\r\n{openEnd.ConnectionRole.ToString()}";
                 Handles.Label(openEnd.Transform.position + Vector3.up * 0.1f, text, boldLabel);
-
             }
         }
     }

@@ -1,11 +1,9 @@
-using Assets.Scripts.Objects;
-using Assets.Scripts.Util;
 using UnityEditor;
 using UnityEngine;
+using Assets.Scripts.Objects;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
-
     /// <summary>
     /// Highlights the SmallGrid Cells occupied by the OpenEnd connections
     /// of a SmallGrid asset.
@@ -14,7 +12,7 @@ namespace ilodev.stationeersmods.tools.visualizers
     {
         public void OnSceneGUI(SceneView sceneView, Object target)
         {
-            if (!EditorPrefs.GetBool("Visualizer.Endpoints", true))
+            if (!EditorPrefs.GetBool("Visualizer.OpenEnds", true))
                 return;
 
             // Only SmallGrids have OpenEnds

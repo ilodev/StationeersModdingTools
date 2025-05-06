@@ -19,13 +19,14 @@ namespace ilodev.stationeersmods.tools.visualizers
             var root = new VisualElement();
 
             // Add toggles for all the visualizer we have
-            root.Add(CreateToggle("End Points", "Visualizer.Endpoints", true, "Visualize OpenEnd connection data: type, role, etc"));
+            root.Add(CreateToggle("Interactables", "Visualizer.Interactables", true, "Show the interactables data: name, type, collider, etc"));
+            root.Add(CreateToggle("Slots", "Visualizer.Slots", true, "Highlight Slot information: Name, type, shape, etc"));
+            root.Add(CreateToggle("Open Ends", "Visualizer.OpenEnds", true, "Visualize OpenEnd connection data: type, role, etc"));
+
             root.Add(CreateToggle("Grid Bounds", "Visualizer.GridBounds", true));
             root.Add(CreateToggle("Large Grid Bounds", "Visualizer.LargeGridBounds", true));
             root.Add(CreateToggle("Small Grid Bounds", "Visualizer.SmallGridBounds", true));
             root.Add(CreateToggle("Force Grid Bounds", "Visualizer.ForceGridBounds", true));
-            root.Add(CreateToggle("Interactables", "Visualizer.Interactables", true, "Show the interactables data: name, type, collider, etc"));
-            root.Add(CreateToggle("Slots", "Visualizer.Slots", true, "Highlight Slot information: Name, type, shape, etc"));
 
             // TODO: Move Toggle definition to the visualizer, and add additional toggles provided
             // by the visualizers here.

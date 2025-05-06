@@ -1,20 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
+    /// <summary>
+    /// Helper class to support custom Editor Preferences
+    /// </summary>
     public static class EditorPrefsHelper
     {
-        // Save Color as Hex String
+        /// <summary>
+        /// Saves color as Hex string
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="color"></param>
         public static void SaveColor(string key, Color color)
         {
             string hex = ColorUtility.ToHtmlStringRGBA(color);
             EditorPrefs.SetString(key, hex);
         }
 
-        // Load Color from Hex String
+        /// <summary>
+        /// Load Color from Hex String
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultColor"></param>
+        /// <returns></returns>
         public static Color LoadColor(string key, Color defaultColor)
         {
             if (!EditorPrefs.HasKey(key))
@@ -27,7 +37,11 @@ namespace ilodev.stationeersmods.tools.visualizers
             return defaultColor;
         }
 
-        // Save Color as separate RGBA floats
+        /// <summary>
+        /// Save Color as separate RGBA floats
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="color"></param>
         public static void SaveColorRGBA(string key, Color color)
         {
             EditorPrefs.SetFloat(key + "_R", color.r);
@@ -36,7 +50,12 @@ namespace ilodev.stationeersmods.tools.visualizers
             EditorPrefs.SetFloat(key + "_A", color.a);
         }
 
-        // Load Color from RGBA floats
+        /// <summary>
+        /// Load Color from RGBA floats
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultColor"></param>
+        /// <returns></returns>
         public static Color LoadColorRGBA(string key, Color defaultColor)
         {
             if (!EditorPrefs.HasKey(key + "_R"))
@@ -49,14 +68,20 @@ namespace ilodev.stationeersmods.tools.visualizers
             return new Color(r, g, b, a);
         }
 
-        // Delete stored color keys (Hex)
+        /// <summary>
+        /// Delete stored color keys (Hex)
+        /// </summary>
+        /// <param name="key"></param>
         public static void DeleteColor(string key)
         {
             if (EditorPrefs.HasKey(key))
                 EditorPrefs.DeleteKey(key);
         }
 
-        // Delete stored color keys (RGBA)
+        /// <summary>
+        /// Delete stored color keys (RGBA)
+        /// </summary>
+        /// <param name="key"></param>
         public static void DeleteColorRGBA(string key)
         {
             EditorPrefs.DeleteKey(key + "_R");

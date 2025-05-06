@@ -5,7 +5,10 @@ using UnityEngine;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
-    public class ThingVisualizerPrefs : EditorWindow
+    /// <summary>
+    /// Initial version of Modding Tools Preferences
+    /// </summary>
+    public class ThingVisualizerPreferences : EditorWindow
     {
         private Color openEndCellColor;
 
@@ -15,7 +18,7 @@ namespace ilodev.stationeersmods.tools.visualizers
         [MenuItem("Window/Stationeers Modding Tools/Visualizers")]
         public static void ShowWindow()
         {
-            GetWindow<ThingVisualizerPrefs>("Stationeers Modding Tools Preferences");
+            GetWindow<ThingVisualizerPreferences>("Stationeers Modding Tools Preferences");
         }
 
         private void OnEnable()
