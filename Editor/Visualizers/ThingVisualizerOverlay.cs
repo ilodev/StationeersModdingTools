@@ -19,6 +19,7 @@ namespace ilodev.stationeersmods.tools.visualizers
             root.Add(CreateToggle("Grid Bounds", "Visualizer.GridBounds", true));
             root.Add(CreateToggle("Large Grid Bounds", "Visualizer.LargeGridBounds", true));
             root.Add(CreateToggle("Small Grid Bounds", "Visualizer.SmallGridBounds", true));
+            root.Add(CreateToggle("Force Grid Bounds", "Visualizer.ForceGridBounds", true));
             root.Add(CreateToggle("Interactables", "Visualizer.Interactables", true));
             root.Add(CreateToggle("Slots", "Visualizer.Slots", true));
 
