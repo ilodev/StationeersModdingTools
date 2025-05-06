@@ -1,6 +1,5 @@
 using Assets.Scripts.GridSystem;
 using Assets.Scripts.Objects;
-using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -16,14 +15,19 @@ namespace ilodev.stationeersmods.tools.visualizers
             if (!EditorPrefs.GetBool("Visualizer.ForceGridBounds", true))
                 return;
 
+            // SmallGrid structures ignore the force grid blocking.
+            if (target as SmallGrid != null)
+                return;
+
             Structure structure = target as Structure;
             if (structure == null)
                 return;
 
             foreach(Grid3 gridCell in structure.ForceGridBounds)
             {
-                Handles.color = new Color(1f, 1f, 1f, 0.3f); // cyan, semi-transparent
-                Handles.DrawWireCube(gridCell.ToVector3(), Vector3.one * SmallGrid.SmallGridSize);
+                Color face = new Color(1f, 1f, 1f, 0.05f); // cyan, semi-transparent
+                Color line = Color.white;
+                DrawingUtils.DrawSolidCube(gridCell.ToVector3(), structure.GridSize, face, line);
             }
         }
     }

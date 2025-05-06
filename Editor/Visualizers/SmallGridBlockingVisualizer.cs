@@ -49,6 +49,7 @@ namespace ilodev.stationeersmods.tools.visualizers
 
         public static void DrawSolidCube(Vector3 center, float size, Color faceColor, Color outlineColor)
         {
+
             Vector3 halfSize = Vector3.one * (size * 0.5f);
 
             // Define the 8 corners of the cube
@@ -159,6 +160,9 @@ namespace ilodev.stationeersmods.tools.visualizers
                             gridMin.z + z
                         );
                         gridCells[index++] = cellIndex;
+
+                        if (index > 150)
+                            return gridCells;
                     }
                 }
             }
