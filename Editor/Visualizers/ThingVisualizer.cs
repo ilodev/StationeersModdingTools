@@ -1,19 +1,46 @@
+using System;
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using Assets.Scripts.Objects;
-using System.Linq;
-using System;
 using UnityEditor.SceneManagement;
 
 namespace ilodev.stationeersmods.tools.visualizers
 {
-
+    /// <summary>
+    /// Collects all Visualizers and calls OnSceneGUI on the required GameObjects
+    /// </summary>
     [InitializeOnLoad]
     public static class ThingVisualizer
     {
-        static IThingVisualizer[] m_ThingVisualizers;
+        /// <summary>
+        /// List of Classes implementing IThingVisualizer
+        /// </summary>
+        private static IThingVisualizer[] m_ThingVisualizers;
 
+
+        /// <summary>
+        /// Returns a list of available visualizers.
+        /// </summary>
+        /// <param name="Refresh"></param>
+        /// <returns></returns>
+        public static IThingVisualizer[] GetVisualizers( bool Refresh = false )
+        {
+            if (Refresh)
+                m_ThingVisualizers = null;
+
+            if (m_ThingVisualizers != null && m_ThingVisualizers.Length > 0)
+                return m_ThingVisualizers;
+
+            CollectVisualizers();
+
+            return m_ThingVisualizers;
+        }
+
+
+        /// <summary>
+        /// Find all classes implementing IThingVisualizer as populate the array
+        /// </summary>
         private static void CollectVisualizers()
         {
             var types = TypeCache.GetTypesDerivedFrom(typeof(IThingVisualizer));
@@ -29,13 +56,20 @@ namespace ilodev.stationeersmods.tools.visualizers
             m_ThingVisualizers = list.ToArray();
         }
 
-        // Static constructor subscribes to SceneView callback
+        /// <summary>
+        /// Constructor, Subscribes itself to the Scene GUI event
+        /// </summary>
         static ThingVisualizer()
         {
             CollectVisualizers();
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
+        /// <summary>
+        /// Calls all the OnSceneGUI visualizers of the active GameObjects
+        /// in the current scene view.
+        /// </summary>
+        /// <param name="sceneView"></param>
         private static void OnSceneGUI(SceneView sceneView)
         {
             Thing[] containers = Resources.FindObjectsOfTypeAll<Thing>();
@@ -44,34 +78,29 @@ namespace ilodev.stationeersmods.tools.visualizers
 
             foreach (var container in containers)
             {
-                // In Prefab Mode — only draw objects in the prefab scene
                 if (prefabStage != null)
                 {
+                    // In Prefab Mode — only draw objects in the prefab scene.
+                    // In this SceneView there is usually one Root object, that
+                    // has to match the scene of the game object.
                     if (container.gameObject.scene != prefabStage.scene)
                         continue;
 
                     foreach (var visualizer in m_ThingVisualizers)
-                    {
                         visualizer.OnSceneGUI(sceneView, container);
-                    }
                 }
-                
-                // In regular scene — skip prefabs not in the active scene
                 else
                 {
+                    // In regular scene — skip prefabs not in the active scene
                     if (!container.gameObject.scene.isLoaded)
                         continue;
 
+                    // Find the IsActive property and disable all rendering for 
+                    // elements that are not enabled in the hiearchy.
                     SerializedObject so = new SerializedObject(container.gameObject);
-                    SerializedProperty isActiveProp = so.FindProperty("m_IsActive");
-                    if (isActiveProp.boolValue == true)
-                    {
+                    if (so.FindProperty("m_IsActive").boolValue == true)
                         foreach (var visualizer in m_ThingVisualizers)
-                        {
                             visualizer.OnSceneGUI(sceneView, container);
-                        }
-
-                    }
                   
                 }
             }
