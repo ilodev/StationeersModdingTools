@@ -21,6 +21,9 @@ namespace ilodev.stationeersmods.tools.uihelpers
             {
                 WireframeGenerator gen = new WireframeGenerator(wf.transform);
                 wf.WireframeEdges = gen.Edges;
+
+                // Make dirty to force saving
+                EditorUtility.SetDirty(target);
             }
 
         }
