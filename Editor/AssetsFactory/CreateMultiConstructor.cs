@@ -1,3 +1,4 @@
+using Assets.Scripts.Objects;
 using System;
 using System.IO;
 using UnityEditor;
@@ -71,6 +72,11 @@ namespace ilodev.stationeersmods.tools.assetsfactory
 
                     // Update the selection to our current object
                     Selection.activeObject = go;
+
+                    // Add default stackable interactables
+                    Thing thing = go.GetComponent<Thing>();
+                    InteractableHelpers.AddInteractable(thing, "SplitOne", InteractableType.Button1);
+                    InteractableHelpers.AddInteractable(thing, "SplitHalf", InteractableType.Button2);
 
                     // We don't need updating again
                     EditorApplication.update -= CreateMultiConstructorObject;

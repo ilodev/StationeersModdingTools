@@ -8,7 +8,7 @@ namespace ilodev.stationeersmods.tools.contextualtools
 {
     public class ContextMenuStackableSplit : Editor
     {
-        [MenuItem("GameObject/Interactable/Stackable/Split One", false, 10)]
+        [MenuItem("GameObject/Interactable/Stackable/Split One", false, 1)]
         static void AddInteractableSplitOne(MenuCommand menuCommand)
         {
             // Get the selected object
@@ -28,7 +28,7 @@ namespace ilodev.stationeersmods.tools.contextualtools
             return ContextMenuValidator.Validate<Stackable>(Selection.activeGameObject);
         }
 
-        [MenuItem("GameObject/Interactable/Stackable/Split Half", false, 10)]
+        [MenuItem("GameObject/Interactable/Stackable/Split Half", false, 2)]
         static void AddInteractableSplitHalf(MenuCommand menuCommand)
         {
             // Get the selected object
