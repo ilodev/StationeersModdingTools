@@ -21,6 +21,7 @@ namespace ilodev.stationeersmods.tools.assetsfactory
             Interactable interactable = new Interactable();
             interactable.StringKey = name;
             interactable.Action = action;
+            interactable.CanKeyInteract = true; // Todo: this is just temporary
             thing.Interactables.Add(interactable);
             EditorUtility.SetDirty(thing);
         }
