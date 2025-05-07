@@ -8,7 +8,7 @@ namespace ilodev.stationeersmods.tools.contextualtools
 {
     public class ContextMenuStackableSplit : Editor
     {
-        [MenuItem("GameObject/Stackable/Interactable/Split One", false, 10)]
+        [MenuItem("GameObject/Interactable/Stackable/Split One", false, 10)]
         static void AddInteractableSplitOne(MenuCommand menuCommand)
         {
             // Get the selected object
@@ -21,14 +21,14 @@ namespace ilodev.stationeersmods.tools.contextualtools
             InteractableHelpers.AddInteractable(thing, "SplitOne", InteractableType.Button1);
         }
 
-        [MenuItem("GameObject/Stackable/Interactable/Split One", true)]
+        [MenuItem("GameObject/Interactable/Stackable/Split One", true)]
         static bool AddInteractableSplitOne()
         {
             // Use the shared validation function
             return ContextMenuValidator.Validate<Stackable>(Selection.activeGameObject);
         }
 
-        [MenuItem("GameObject/Stackable/Interactable/Split Half", false, 10)]
+        [MenuItem("GameObject/Interactable/Stackable/Split Half", false, 10)]
         static void AddInteractableSplitHalf(MenuCommand menuCommand)
         {
             // Get the selected object
@@ -41,7 +41,7 @@ namespace ilodev.stationeersmods.tools.contextualtools
             InteractableHelpers.AddInteractable(thing, "SplitHalf", InteractableType.Button2);
         }
 
-        [MenuItem("GameObject/Stackable/Interactable/Split Half", true)]
+        [MenuItem("GameObject/Interactable/Stackable/Split Half", true)]
         static bool AddInteractableSplitHalf()
         {
             // Use the shared validation function
