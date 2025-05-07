@@ -1,4 +1,5 @@
 using Assets.Scripts.Objects;
+using Assets.Scripts.Objects.Items;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -47,6 +48,34 @@ namespace ilodev.stationeersmods.tools.diagnostics
             {
                 EditorGUILayout.HelpBox("This DynamicThing is missing a RigidBody", MessageType.Error);
             }
+
+            Constructor constructor = dynamicThing.GetComponent<Constructor>();
+            if (constructor != null)
+            {
+                if (constructor.BuildStructure == null)
+                {
+                    EditorGUILayout.HelpBox("This Constructor is missing a structure Prefab to build", MessageType.Error);
+                }
+            }
+
+            MultiConstructor multiConstructor = dynamicThing.GetComponent<MultiConstructor>();
+            if (multiConstructor != null)
+            {
+                if (multiConstructor.Constructables?.Count == 0)
+                {
+                    EditorGUILayout.HelpBox("This MultiConstructor is missing a structure Prefab to build", MessageType.Error);
+                }
+            }
+
+            DynamicThingConstructor dynamicThingConstructor = dynamicThing.GetComponent<DynamicThingConstructor>();
+            if (dynamicThingConstructor != null)
+            {
+                if (dynamicThingConstructor.ConstructedPrefab == null)
+                {
+                    EditorGUILayout.HelpBox("This DynamicThingConstructor is missing a Prefab to build", MessageType.Error);
+                }
+            }
+
 
             return defaultHidden;
         }

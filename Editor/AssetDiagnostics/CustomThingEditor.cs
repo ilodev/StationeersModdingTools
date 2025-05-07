@@ -19,7 +19,6 @@ namespace ilodev.stationeersmods.tools.diagnostics
 
         public void OnEnable(Object target) { }
 
-
         public int OnInspectorGUI(Object target, int defaultHidden)
         {
             //Debug.Log("CustomThingEditor.OnInspectorGUI");
@@ -157,16 +156,24 @@ namespace ilodev.stationeersmods.tools.diagnostics
                     rev[0] = new Keyframe(0.0f, 0.0f);
                     rev[1] = new Keyframe(1.0f, 1.0f);
                     gameAudioSource.ReverbCurve = new AnimationCurve(rev);
-
                 }
             }
-
 
             if (thing.Transform == null)
             {
                 thing.ThingTransform = thing.transform;
                 result++;
             }
+
+            /*
+            Debug.Log($"Thumbnail Name {thing.Thumbnail?.name}");
+            // If we have a Thumbnail called rename me, change the name to the asset name
+            if (thing.Thumbnail != null && thing.Thumbnail.name == "NewPrefabWithScript")
+            {
+                string thumbnail = AssetDatabase.GetAssetPath(thing.Thumbnail);
+                AssetDatabase.RenameAsset(thumbnail, thing.name + ".png");
+            }
+            */
 
             return result;
         }
