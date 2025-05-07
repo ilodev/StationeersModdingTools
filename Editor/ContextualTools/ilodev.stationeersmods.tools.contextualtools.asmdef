@@ -1,0 +1,21 @@
+{
+    "name": "ilodev.stationeersmods.tools.contextualtools",
+    "rootNamespace": "ilodev.stationeersmods.tools.contextualtools",
+    "references": [
+        "GUID:576d25b95d3257d4bb11fa51226f8d71"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Assembly-CSharp.dll",
+        "Assembly-CSharp-firstpass.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
