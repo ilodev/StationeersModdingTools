@@ -13,7 +13,9 @@
         "Assembly-CSharp-firstpass.dll"
     ],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "STATIONEERS_DLL"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
