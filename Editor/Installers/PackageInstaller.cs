@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
@@ -8,40 +9,49 @@ namespace ilodev.stationeers.moddingtools.installers
     public static class PackageInstaller
     {
         private static AddRequest request;
+        private static List<string> packagesToInstall;
+        private static int currentIndex;
 
         [MenuItem("Tools/Install Required Packages")]
         public static void InstallPackages()
         {
-            // List of packages to install
-            string[] packages = new string[]
+            if (EditorUtility.DisplayDialog("Install Packages",
+                "This will install required packages. Continue?", "Yes", "Cancel"))
             {
-            "com.unity.mathematics",
-            "com.unity.collections",
-            "com.unity.textmeshpro",
-            "com.unity.ugui",
-            "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-            "https://github.com/ilodev/StationeersModsExport.git"
+                packagesToInstall = new List<string>
+            {
+                "com.unity.mathematics",
+                "com.unity.collections",
+                "com.unity.textmeshpro",
+                "com.unity.ugui",
+                "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+                "https://github.com/ilodev/StationeersModsExport.git"
             };
 
-            InstallNextPackage(packages, 0);
+                currentIndex = 0;
+                InstallNextPackage();
+            }
         }
 
-        private static void InstallNextPackage(string[] packages, int index)
+        private static void InstallNextPackage()
         {
-            if (index >= packages.Length)
+            if (currentIndex >= packagesToInstall.Count)
             {
+                EditorUtility.ClearProgressBar();
                 Debug.Log("All packages installed.");
                 return;
             }
 
-            string packageName = packages[index];
-            Debug.Log("Installing package: " + packageName);
+            string packageName = packagesToInstall[currentIndex];
+            float progress = (float)currentIndex / packagesToInstall.Count;
+            EditorUtility.DisplayProgressBar("Installing Packages",
+                "Installing: " + packageName, progress);
 
             request = Client.Add(packageName);
-            EditorApplication.update += () => MonitorRequest(packages, index);
+            EditorApplication.update += MonitorRequest;
         }
 
-        private static void MonitorRequest(string[] packages, int index)
+        private static void MonitorRequest()
         {
             if (request.IsCompleted)
             {
@@ -51,11 +61,12 @@ namespace ilodev.stationeers.moddingtools.installers
                 }
                 else if (request.Status >= StatusCode.Failure)
                 {
-                    Debug.LogError("Failed to install " + packages[index] + ": " + request.Error.message);
+                    Debug.LogError("Failed to install " + packagesToInstall[currentIndex] + ": " + request.Error.message);
                 }
 
-                EditorApplication.update -= () => MonitorRequest(packages, index);
-                InstallNextPackage(packages, index + 1);
+                EditorApplication.update -= MonitorRequest;
+                currentIndex++;
+                InstallNextPackage();
             }
         }
     }
