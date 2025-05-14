@@ -24,8 +24,6 @@ namespace ilodev.stationeers.moddingtools.installers
                 "com.unity.collections",
                 "com.unity.textmeshpro",
                 "com.unity.ugui",
-                "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-                "https://github.com/ilodev/StationeersModsExport.git"
             };
 
                 currentIndex = 0;
