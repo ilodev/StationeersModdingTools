@@ -37,6 +37,9 @@ namespace ilodev.stationeersmods.tools.visualizers
                 if (size == Vector3.zero)
                     continue;
 
+                if (interactable.Bounds.size == Vector3.zero)
+                    size = new Vector3(0.01f, 0.01f, 0.01f);
+
                 Transform slotTransform = GetSlotTransform(thing, interactable.Action);
 
                 if (interactable.Collider != null)
@@ -47,7 +50,6 @@ namespace ilodev.stationeersmods.tools.visualizers
                 {
                     if (slotTransform != null) position += slotTransform.position;
                 }
-
                 
                 if (interactable.Collider != null)
                 {
