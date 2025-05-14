@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +8,16 @@ namespace ilodev.stationeers.moddingtools.installers
     public class QuickTipsWindow : EditorWindow
     {
         private Vector2 scrollPos;
+
+        string[] targetAssemblies = {
+            "Assembly-CSharp",
+            "0Harmony",
+            "BepInEx",
+            "unity.assembly.missing",
+            "Unity.Mathematics",
+            "Unity.Collections",
+            "Unity.Burst",
+        };
 
         [MenuItem("Window/Stationeers Modding Tools/QuickTips")]
         public static void ShowWindow()
@@ -29,6 +41,30 @@ namespace ilodev.stationeers.moddingtools.installers
             {
                 Close();
             }
+
+            CheckLoadedAssemblies(); 
+
         }
+
+        private void CheckLoadedAssemblies()
+        {
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (string assemblyName in targetAssemblies)
+            {
+                var assembly = loadedAssemblies.FirstOrDefault(a => a.GetName().Name == assemblyName);
+                if (assembly != null)
+                {
+                    var version = assembly.GetName().Version;
+                    var test = assembly.GetName().FullName;
+                    Debug.Log(assemblyName + " is loaded with version (v" + version + ") ("+ test +")");
+                }
+                else
+                {
+                    Debug.LogWarning(assemblyName + " is not loaded.");
+                }
+            }
+        }
+
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 using static Assets.Scripts.Util.Defines;
 using Color = UnityEngine.Color;
 
-namespace ilodev.stationeersmods.tools.visualizers
+namespace ilodev.stationeers.moddingtools.visualizers
 {
     public class SmallGridBlockingVisualizer : IThingVisualizer
     {

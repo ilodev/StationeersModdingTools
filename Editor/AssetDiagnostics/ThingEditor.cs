@@ -4,6 +4,7 @@ using System;
 using UnityEditor;
 using System.Linq;
 using Assets.Scripts.Util;
+using UnityEngine;
 
 namespace ilodev.stationeersmods.tools.diagnostics
 {
@@ -33,6 +34,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
             CollectEditors();
             OnEnableEditors();
             EditorApplication.update += OnUpdateEditors;
+            EditorApplication.contextualPropertyMenu += OnPropertyContext;
         }
 
         private void CollectEditors()
@@ -74,6 +76,49 @@ namespace ilodev.stationeersmods.tools.diagnostics
         {
             OnDisableEditors();
             EditorApplication.update -= OnUpdateEditors;
+            EditorApplication.contextualPropertyMenu -= OnPropertyContext;
+        }
+
+        /// <summary>
+        /// Called when a property contextual menu is shown
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <param name="property"></param>
+        private void OnPropertyContext(GenericMenu menu, SerializedProperty property)
+        {
+            
+            Debug.Log($"CALLED ON PROPERTY: {property.name}");
+            Debug.Log($"CALLED ON {property.propertyPath}");
+
+            if (property.name == "Bounds")
+            {
+                menu.AddItem(new GUIContent("Calculate"), false, () =>
+                {
+                });
+                menu.AddItem(new GUIContent("Reset"), false, () =>
+                {
+                });
+            }
+
+            if (property.name == "Forward")
+            {
+                menu.AddItem(new GUIContent("Reset"), false, () =>
+                {
+                    property.vector3Value = Vector3.zero;
+                    property.serializedObject.ApplyModifiedProperties();
+                });
+            }
+
+            if (property.name == "PaintableMaterial")
+            {
+                menu.AddItem(new GUIContent("Create"), false, () =>
+                {
+                    GameObject gameObject = new GameObject("DisplayPoint");
+                    gameObject.transform.parent = ((MonoBehaviour)target).transform;
+                    property.objectReferenceValue = gameObject.transform;
+                });
+
+            }
         }
 
         /// <summary>

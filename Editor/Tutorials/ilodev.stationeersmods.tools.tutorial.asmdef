@@ -1,0 +1,16 @@
+{
+    "name": "ilodev.stationeersmods.tools.tutorial",
+    "rootNamespace": "ilodev.stationeersmods.tools.tutorial",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

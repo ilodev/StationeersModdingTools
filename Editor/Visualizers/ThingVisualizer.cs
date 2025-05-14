@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Assets.Scripts.Objects;
 using UnityEditor.SceneManagement;
 
-namespace ilodev.stationeersmods.tools.visualizers
+namespace ilodev.stationeers.moddingtools.visualizers
 {
     /// <summary>
     /// Collects all Visualizers and calls OnSceneGUI on the required GameObjects

@@ -1,6 +1,6 @@
 {
-    "name": "ilodev.stationeersmods.tools.visualizers",
-    "rootNamespace": "ilodev.stationeersmods.tools.visualizers",
+    "name": "ilodev.stationeers.moddingtools.validation",
+    "rootNamespace": "ilodev.stationeers.moddingtools.validation",
     "references": [],
     "includePlatforms": [
         "Editor"
