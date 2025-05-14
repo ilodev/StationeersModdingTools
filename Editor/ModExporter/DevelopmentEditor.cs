@@ -16,7 +16,7 @@ namespace ilodev.stationeers.moddingtools.exporter
             {
                 Patcher.CheckDevelopmentMode(settings);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 /* ignore */
             }
@@ -111,7 +111,7 @@ namespace ilodev.stationeers.moddingtools.exporter
                                 Patcher.SetDevelopmentMode(settings, true);
                             }
                             catch (ArgumentException ex)
-                            {
+                            { 
                                 EditorUtility.DisplayDialog("Error", ex.Message, "OK");
                             }
                         };

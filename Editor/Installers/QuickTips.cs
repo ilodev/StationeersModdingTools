@@ -1,5 +1,9 @@
+using Newtonsoft.Json.Bson;
 using System;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,12 +12,12 @@ namespace ilodev.stationeers.moddingtools.installers
     public class QuickTipsWindow : EditorWindow
     {
         private Vector2 scrollPos;
+        private bool showAssemblies;
 
         string[] targetAssemblies = {
             "Assembly-CSharp",
             "0Harmony",
             "BepInEx",
-            "unity.assembly.missing",
             "Unity.Mathematics",
             "Unity.Collections",
             "Unity.Burst",
@@ -31,6 +35,12 @@ namespace ilodev.stationeers.moddingtools.installers
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
+            // Are we missing any assembly required for the project.
+            ShowLoadedAssemblies();
+
+            // Do we have an asmdef in our Assets/ folder.
+            ShowAsmdef();
+
             EditorGUILayout.HelpBox("Tip 1: You can access XYZ via the Tools menu.", MessageType.Info);
             EditorGUILayout.HelpBox("Tip 2: Remember to set up your layers before using ABC.", MessageType.Info);
             EditorGUILayout.HelpBox("Tip 3: Use the shortcut Ctrl+Alt+M to toggle feature DEF.", MessageType.Info);
@@ -42,29 +52,100 @@ namespace ilodev.stationeers.moddingtools.installers
                 Close();
             }
 
-            CheckLoadedAssemblies(); 
 
         }
 
-        private void CheckLoadedAssemblies()
+        /// <summary>
+        /// Collapsible list of assembles required.
+        /// </summary>
+        private void ShowLoadedAssemblies()
         {
+            Color oldColor = GUI.color;
+
+            bool allAssembliesFound = CheckLoadedAssemblies();
+
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
+            string assembliesFound = allAssembliesFound ? "All required assemblies found: Ok" : "Missing required assemblies";
+
+            EditorGUILayout.Space();
+        
+            showAssemblies = EditorGUILayout.Foldout(showAssemblies, assembliesFound, true);
+
+            if (showAssemblies)
+            {
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                foreach (string assemblyName in targetAssemblies)
+                {
+                    var assembly = loadedAssemblies.FirstOrDefault(a => a.GetName().Name == assemblyName);
+                    if (assembly != null)
+                    {
+                        GUI.color = Color.white;
+                        var version = assembly.GetName().Version;
+                        var test = assembly.GetName().FullName;
+                        Debug.Log(assemblyName + " is loaded with version (v" + version + ") (" + test + ")");
+                        GUILayout.Label($"{assemblyName}: {version}", EditorStyles.boldLabel);
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                        Debug.LogWarning(assemblyName + " is not loaded.");
+                        GUILayout.Label($"{assemblyName}: Missing", EditorStyles.boldLabel);
+                    }
+                }
+                EditorGUILayout.EndVertical();
+            }
+            GUI.color = oldColor;
+        }
+
+        /// <summary>
+        /// We could cache this, but we want the UI to update so we have to leave it in 
+        /// the OnGUI call.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckLoadedAssemblies()
+        {
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (string assemblyName in targetAssemblies)
             {
                 var assembly = loadedAssemblies.FirstOrDefault(a => a.GetName().Name == assemblyName);
-                if (assembly != null)
-                {
-                    var version = assembly.GetName().Version;
-                    var test = assembly.GetName().FullName;
-                    Debug.Log(assemblyName + " is loaded with version (v" + version + ") ("+ test +")");
-                }
-                else
-                {
-                    Debug.LogWarning(assemblyName + " is not loaded.");
-                }
+                if (assembly == null)
+                    return false;
             }
+            return true;
         }
+
+        private void ShowAsmdef()
+        {
+            Color oldColor = GUI.color;
+            EditorGUILayout.Space();
+
+            bool oneAsmdefFound = CheckAsmdefs();
+
+            string asmdefFound = oneAsmdefFound ? "At least one Asmdef in your Assets folder: Ok" : "Missing project Assembly definition";
+
+            if (oneAsmdefFound)
+            {
+                GUI.color = Color.white;
+            }
+            else
+            {
+                GUI.color = Color.red;
+            }
+            GUILayout.Label(asmdefFound, EditorStyles.boldLabel);
+            GUI.color = oldColor;
+        }
+
+        private bool CheckAsmdefs() {
+
+            string[] guids = AssetDatabase.FindAssets("t:AssemblyDefinitionAsset", new[] { "Assets" });
+            if (guids.Length == 0)
+            {
+                return false;
+            }
+
+            return true;
+         }
 
     }
 }
