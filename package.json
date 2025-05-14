@@ -12,5 +12,12 @@
   "author": {
     "name": "Inaki",
     "url": "https://www.youtube.com/@yonoqueriacuenta"
-  }
+  },
+  "samples": [
+    {
+        "displayName": "Sample Resources",
+        "description": "Contains authored materials and other game-alike resources.",
+        "path": "Samples~/SamplesResources"
+    }
+  ]
 }
