@@ -8,7 +8,7 @@ using UnityEngine;
 namespace ilodev.stationeers.moddingtools.installers
 {
     /// <summary>
-    /// Class to control a constrain for asmdef
+    /// Class to control a constraint for asmdef
     /// </summary>
     public class OptionalToolAssetPostProcessor : AssetPostprocessor
     {
@@ -26,12 +26,10 @@ namespace ilodev.stationeers.moddingtools.installers
         /// If the namespace is present, we will force this define for other asmdefs to know they 
         /// can be compiled.
         /// </summary>
-        private static string defineSymbol = "STATIONEERS_DLL";  // Define symbol to control the assembly
+        private static string defineSymbol = "STATIONEERS_DLL_PRESENT";  // Define symbol to control the assembly
 
         // Should we check for the dll file as well
         private static bool DllCheck = false;
-
-        
         
         // Called when an asset is imported or deleted
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -43,12 +41,12 @@ namespace ilodev.stationeers.moddingtools.installers
             if (namespaceExists)
             {
                 AddDefineSymbol(defineSymbol);
-                // Debug.Log($"{targetNamespace} found. Tool enabled.");
+                //Debug.Log($"{targetNamespace} found. Tool enabled.");
             }
             else
             {
                 RemoveDefineSymbol(defineSymbol);
-                // Debug.Log($"{targetNamespace} not found. Tool disabled.");
+                //Debug.Log($"{targetNamespace} not found. Tool disabled.");
             }
 
             // Check if the DLL was added or removed
@@ -81,6 +79,10 @@ namespace ilodev.stationeers.moddingtools.installers
 
             foreach (var assembly in assemblies)
             {
+                // looking for a particular assembly name
+                if (assembly.FullName.StartsWith("Assemby-CSharp."))
+                    continue;
+
                 try
                 {
                     // Get all types in the assembly
@@ -89,14 +91,14 @@ namespace ilodev.stationeers.moddingtools.installers
                     // Check if any type belongs to the specified namespace
                     if (types.Any(t => t.Namespace == namespaceName))
                     {
-                        // Debug.Log($"Assembly: {assembly}");
+                        // Debug.Log($"Namespace found in Assembly: {assembly}");
                         return true; // Namespace is found
                     }
                 }
-                catch (ReflectionTypeLoadException)
+                catch (ReflectionTypeLoadException e)
                 {
                     // Ignore any assemblies that fail to load types
-                    // Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
+                    Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
                 }
             }
 

@@ -14,7 +14,7 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [
-        "STATIONEERS_DLL"
+        "STATIONEERS_DLL_PRESENT"
     ],
     "versionDefines": [],
     "noEngineReferences": false
