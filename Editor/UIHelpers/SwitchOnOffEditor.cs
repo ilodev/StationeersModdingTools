@@ -18,6 +18,9 @@ namespace ilodev.stationeersmods.tools.uihelpers
         private float animationTime = 0f;
         private SerializedProperty timeProp;
 
+        private bool Powered = false;
+        
+
         private void OnEnable()
         {
             timeProp = serializedObject.FindProperty("time");
@@ -37,6 +40,19 @@ namespace ilodev.stationeersmods.tools.uihelpers
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("State Testing", EditorStyles.boldLabel);
+
+            // Begin checking for changes
+            EditorGUI.BeginChangeCheck();
+
+            Powered = EditorGUILayout.Toggle("IsPowered", Powered);
+
+            // End checking for changes
+            if (EditorGUI.EndChangeCheck())
+            {
+                Debug.Log("Powered has changed! New value: " + Powered);
+                // You can also perform whatever actions you need here
+            }
+
 
             if (GUILayout.Button("Switch On"))
             {
@@ -80,13 +96,17 @@ namespace ilodev.stationeersmods.tools.uihelpers
             Debug.Log($"SwitchOnOff {SOF}");
             var onMaterialField = typeof(SwitchOnOff).GetField("on", BindingFlags.NonPublic | BindingFlags.Instance);
             var offMaterialField = typeof(SwitchOnOff).GetField("off", BindingFlags.NonPublic | BindingFlags.Instance);
+            var onPoweredMaterialField = typeof(SwitchOnOff).GetField("onPowered", BindingFlags.NonPublic | BindingFlags.Instance);
             var switchRendererField = typeof(SwitchOnOff).GetField("switchRenderer", BindingFlags.NonPublic | BindingFlags.Instance);
 
             Material onMaterial = (Material)onMaterialField.GetValue(SOF);
             Material offMaterial = (Material)offMaterialField.GetValue(SOF);
+            Material onPoweredMaterial = (Material)onPoweredMaterialField.GetValue(SOF);
+
+            Material OnMaterial = Powered ? onPoweredMaterial : onMaterial;
 
             MeshRenderer switchRenderer = (MeshRenderer)switchRendererField.GetValue(SOF);
-            switchRenderer.sharedMaterial = state ? onMaterial : offMaterial;
+            switchRenderer.sharedMaterial = state ? OnMaterial : offMaterial;
         }
 
 
