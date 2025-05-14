@@ -15,7 +15,7 @@ namespace ilodev.stationeers.moddingtools.exporter
 
         public static List<string> extraAssets { get; private set; }
 
-        [MenuItem("StationeersMods/Show Copy Assets")]
+        [MenuItem("Modding/Show Copy Assets")]
         public static void ShowWindow()
         {
             var window = GetWindow<ExtraAssetsWindow>("Additional Copy Assets", typeof(ExporterEditorWindow));

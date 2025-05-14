@@ -100,6 +100,7 @@ namespace ilodev.stationeers.moddingtools.exporter
         public ContentType ContentTypes { get => _contentTypes; set => _contentTypes =value;}
 
         public bool IncludePdbs { get => _includePdbs; set => _includePdbs = value; }
+
         public bool WaitForDebugger { get => _waitForDebugger; set => _waitForDebugger = value; }
 
         public BootType BootType { get => _bootType; set => _bootType =value;}

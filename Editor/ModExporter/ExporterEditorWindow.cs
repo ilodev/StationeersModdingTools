@@ -38,23 +38,23 @@ namespace ilodev.stationeers.moddingtools.exporter
             return shortString;
         }
 
-        [MenuItem("StationeersMods/Export Settings")]
+        [MenuItem("Modding/Export Settings")]
         public static void ShowWindow()
         {
             var window = GetWindow<ExporterEditorWindow>();
-            window.titleContent = new GUIContent("StationeersMods Exporter");
+            window.titleContent = new GUIContent("LaunchPad Exporter");
             window.minSize = new Vector2(450, 320);
             ExtraAssetsWindow.ShowWindow();
             window.Focus();
         }
 
-        [MenuItem("StationeersMods/Export Mod", false, 20)]
+        [MenuItem("Modding/Export Mod", false, 20)]
         public static void ExportModMenuItem()
         {
             ExportMod();
         }
 
-        [MenuItem("StationeersMods/Export && Run Mod", false, 20)]
+        [MenuItem("Modding/Export && Run Mod", false, 20)]
         public static void ExportAndRunModMenuItem()
         {
             ExportMod();
@@ -92,14 +92,14 @@ namespace ilodev.stationeers.moddingtools.exporter
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(50);
 
-                if (GUILayout.Button("Save & Export", GUILayout.Height(30)))
+                if (GUILayout.Button("Export", GUILayout.Height(25)))
                 {
                     EditorApplication.delayCall += () => Export.ExportMod(settings);
                 }
 
                 GUILayout.Space(5);
 
-                if (GUILayout.Button("Save & Export & Run", GUILayout.Height(30)))
+                if (GUILayout.Button("Export & Run", GUILayout.Height(25)))
                 {
                     EditorApplication.delayCall += () =>
                     {
