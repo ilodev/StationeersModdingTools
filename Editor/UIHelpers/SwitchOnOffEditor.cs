@@ -158,6 +158,8 @@ namespace ilodev.stationeersmods.tools.uihelpers
 
                 animationTime = 0f;
             }
+
+            SceneView.RepaintAll(); // Refresh the scene view for visual update
         }
     }
 }
