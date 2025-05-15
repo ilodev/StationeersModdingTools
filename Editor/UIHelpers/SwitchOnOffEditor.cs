@@ -13,17 +13,11 @@ namespace ilodev.stationeersmods.tools.uihelpers
     [CustomEditor(typeof(SwitchOnOff), true)] 
     public class SwitchOnOffEditor : Editor
     {
-        private bool isAnimating = false;
-        private int currentState = 0;
-        private float animationTime = 0f;
-        private SerializedProperty timeProp;
-
         private bool Powered = false;
         
 
         private void OnEnable()
         {
-            timeProp = serializedObject.FindProperty("time");
             //EditorApplication.update += UpdateAnimation;
         }
 
@@ -71,15 +65,11 @@ namespace ilodev.stationeersmods.tools.uihelpers
                 TurnErrorOnOff(SOF, 1);
                 //StartAnimation(SOF, 1);
             }
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Animating: " + (isAnimating ? "Yes" : "No"));
         }
 
 
         private void TurnPositionOnOff(SwitchOnOff SOF, bool state)
         {
-            Debug.Log($"SwitchOnOff {SOF}"); 
             var onPositionField = typeof(SwitchOnOff).GetField("onPosition", BindingFlags.NonPublic | BindingFlags.Instance);
             var offPositionField = typeof(SwitchOnOff).GetField("offPosition", BindingFlags.NonPublic | BindingFlags.Instance);
             var switchTransformField = typeof(SwitchOnOff).GetField("switchTransform", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -93,7 +83,6 @@ namespace ilodev.stationeersmods.tools.uihelpers
 
         private void TurnMaterialOnOff(SwitchOnOff SOF, bool state)
         {
-            Debug.Log($"SwitchOnOff {SOF}");
             var onMaterialField = typeof(SwitchOnOff).GetField("on", BindingFlags.NonPublic | BindingFlags.Instance);
             var offMaterialField = typeof(SwitchOnOff).GetField("off", BindingFlags.NonPublic | BindingFlags.Instance);
             var onPoweredMaterialField = typeof(SwitchOnOff).GetField("onPowered", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -103,7 +92,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
             Material offMaterial = (Material)offMaterialField.GetValue(SOF);
             Material onPoweredMaterial = (Material)onPoweredMaterialField.GetValue(SOF);
 
-            Material OnMaterial = Powered ? onPoweredMaterial : onMaterial;
+            Material OnMaterial = Powered ? onPoweredMaterial : onMaterial; 
 
             MeshRenderer switchRenderer = (MeshRenderer)switchRendererField.GetValue(SOF);
             switchRenderer.sharedMaterial = state ? OnMaterial : offMaterial;
@@ -114,59 +103,6 @@ namespace ilodev.stationeersmods.tools.uihelpers
         private void TurnErrorOnOff(SwitchOnOff SOF, int state)
         {
             //SOF.RefreshState();
-        }
-
-
-        private void StartAnimation(SwitchOnOff SOF, int state)
-        {
-            currentState = state;
-            animationTime = 0f;
-            isAnimating = true;
-        }
-
-        private void UpdateAnimation()
-        {
-            if (!isAnimating)
-                return;
-
-            SwitchOnOff IAC = (SwitchOnOff)target;
-            if (IAC == null)
-            {
-                isAnimating = false;
-                return;
-            }
-
-            animationTime += Time.deltaTime;
-            float timeValue = timeProp.floatValue;
-            float t = Mathf.Clamp01(animationTime / timeValue);
-
-            AnimKeyFrameCollection src;
-            AnimKeyFrameCollection dst;
-
-            if (currentState == 0) {
-                var type = typeof(ImportAnimationComponent);
-                var field1 = type.GetField("state0", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                src = (AnimKeyFrameCollection)field1.GetValue(IAC);
-                var field2 = type.GetField("state1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                dst = (AnimKeyFrameCollection)field2.GetValue(IAC);
-            }
-            else
-            {
-                var type = typeof(ImportAnimationComponent);
-                var field1 = type.GetField("state1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                src = (AnimKeyFrameCollection)field1.GetValue(IAC);
-                var field2 = type.GetField("state0", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                dst = (AnimKeyFrameCollection)field2.GetValue(IAC);
-            }
-
-            src.Lerp(dst, t);
-
-            if (t >= 1f)
-            {
-                isAnimating = false;
-            }
-
-            SceneView.RepaintAll(); // Refresh the scene view for visual update
         }
 
     }
