@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
@@ -52,7 +53,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
         private void StartAnimation(BinaryTransformAnimComponent IAC, int state)
         {
             currentState = state;
-            animationTime = 0f;
+            animationTime = -0.5f;
             isAnimating = true;
         }
 
