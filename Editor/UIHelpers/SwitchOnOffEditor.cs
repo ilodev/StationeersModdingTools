@@ -14,8 +14,8 @@ namespace ilodev.stationeersmods.tools.uihelpers
     [CustomEditor(typeof(SwitchOnOff), true)] 
     public class SwitchOnOffEditor : Editor
     {
-        private bool Powered = false;
-        private bool currentState = false;
+        public bool Powered = false;
+        public bool currentState = false;
         private bool Error = false;
         private float animationTime = 0f;
         private int animationStep = 0;
@@ -27,13 +27,13 @@ namespace ilodev.stationeersmods.tools.uihelpers
         FieldInfo onMaterialField;
         FieldInfo offMaterialField;
         FieldInfo onPoweredMaterialField;
-        FieldInfo switchRendererField;
+        public FieldInfo switchRendererField;
 
         FieldInfo errorMaterialField;
 
-        SwitchOnOff SOF;
+        public SwitchOnOff SOF;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             SOF = (SwitchOnOff)target;
 
@@ -51,7 +51,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
             EditorApplication.update += UpdateErrorAnimation;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             TurnPositionOnOff(SOF, false);
             EditorApplication.update -= UpdateErrorAnimation;
