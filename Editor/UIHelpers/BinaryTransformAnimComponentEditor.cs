@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,22 +13,39 @@ namespace ilodev.stationeersmods.tools.uihelpers
         private float animationTime = 0f;
         private SerializedProperty timeProp;
 
+        BinaryTransformAnimComponent IAC;
+        FieldInfo state0;
+        FieldInfo state1;
+
         private void OnEnable()
         {
+            IAC = (BinaryTransformAnimComponent)target;
+            state0 = typeof(ImportAnimationComponent).GetField("state0", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            state1 = typeof(ImportAnimationComponent).GetField("state1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
             timeProp = serializedObject.FindProperty("time");
+ 
             EditorApplication.update += UpdateAnimation;
         }
 
         private void OnDisable()
         {
+
+            // Reset position to state0
+            ApplyState(state0);
             EditorApplication.update -= UpdateAnimation;
+        }
+
+        private void ApplyState(FieldInfo state)
+        {
+            AnimKeyFrameCollection src = (AnimKeyFrameCollection)state.GetValue(IAC);
+            src.Apply();
+            SceneView.RepaintAll(); // Refresh the scene view for visual update
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-            BinaryTransformAnimComponent IAC = (BinaryTransformAnimComponent)target;
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("State Testing", EditorStyles.boldLabel);
@@ -53,7 +67,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
         private void StartAnimation(BinaryTransformAnimComponent IAC, int state)
         {
             currentState = state;
-            animationTime = -0.5f;
+            animationTime = -0.4f;
             isAnimating = true;
         }
 
@@ -62,7 +76,6 @@ namespace ilodev.stationeersmods.tools.uihelpers
             if (!isAnimating)
                 return;
 
-            BinaryTransformAnimComponent IAC = (BinaryTransformAnimComponent)target;
             if (IAC == null)
             {
                 isAnimating = false;
@@ -77,19 +90,15 @@ namespace ilodev.stationeersmods.tools.uihelpers
             AnimKeyFrameCollection dst;
 
             if (currentState == 0) {
-                var type = typeof(ImportAnimationComponent);
-                var field1 = type.GetField("state0", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                src = (AnimKeyFrameCollection)field1.GetValue(IAC);
-                var field2 = type.GetField("state1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                dst = (AnimKeyFrameCollection)field2.GetValue(IAC);
+                ApplyState(state0);
+                src = (AnimKeyFrameCollection)state0.GetValue(IAC);
+                dst = (AnimKeyFrameCollection)state1.GetValue(IAC);
             }
             else
             {
-                var type = typeof(ImportAnimationComponent);
-                var field1 = type.GetField("state1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                src = (AnimKeyFrameCollection)field1.GetValue(IAC);
-                var field2 = type.GetField("state0", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                dst = (AnimKeyFrameCollection)field2.GetValue(IAC);
+                ApplyState(state1);
+                src = (AnimKeyFrameCollection)state1.GetValue(IAC);
+                dst = (AnimKeyFrameCollection)state0.GetValue(IAC);
             }
 
             src.Lerp(dst, t);
