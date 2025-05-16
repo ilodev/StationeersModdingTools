@@ -20,7 +20,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
             if (GUILayout.Button("Generate Edges"))
             {
                 Debug.Log("Generating Edges starting");
-                WireframeGenerator gen = new WireframeGenerator(wf.transform);
+                WireframeGenerator gen = new WireframeGenerator(wf.BlueprintTransform);
                 wf.WireframeEdges = gen.Edges;
                 wf.BlueprintMeshFilter.sharedMesh = gen.CombinedMesh;
                 // Make dirty to force saving
@@ -29,6 +29,14 @@ namespace ilodev.stationeersmods.tools.uihelpers
             }
 
             ShowEdge = GUILayout.Toggle(ShowEdge, "Show Edges");
+            if (wf.WireframeEdges.Count > 0)
+            {
+                if (GUILayout.Button("Save Mesh"))
+                {
+                    Debug.Log("Generating Edges starting");
+
+                }
+            }
         }
 
         public void OnSceneGUI()
@@ -36,11 +44,14 @@ namespace ilodev.stationeersmods.tools.uihelpers
             if (ShowEdge == true)
             {
                 Wireframe wf = (Wireframe)target;
+                Color color = Handles.color;
+                Handles.color = new Color(0, 255, 0, 0.8f);
                 foreach (var edge in wf.WireframeEdges)
                 {
                     Handles.DrawLine(edge.Point1, edge.Point2, 0.02f);
                 }
-
+                Handles.color = color;
+                SceneView.RepaintAll();
             }
 
         }
