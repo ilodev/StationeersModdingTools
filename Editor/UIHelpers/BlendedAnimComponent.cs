@@ -29,7 +29,7 @@ namespace ilodev.stationeersmods.tools.uihelpers
 
         private void OnDisable()
         {
-            //TurnPositionOnOff(AB, false);
+            OnRatioChange(BAC, 0);
         }
 
         public override void OnInspectorGUI()
