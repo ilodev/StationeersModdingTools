@@ -91,15 +91,19 @@ namespace ilodev.stationeersmods.tools.visualizers
                 else
                 {
                     // In regular scene — skip prefabs not in the active scene
-                    if (!container.gameObject.scene.isLoaded)
+                    if (container.gameObject?.scene != null && !container.gameObject.scene.isLoaded)
                         continue;
 
                     // Find the IsActive property and disable all rendering for 
                     // elements that are not enabled in the hiearchy.
-                    SerializedObject so = new SerializedObject(container.gameObject);
-                    if (so.FindProperty("m_IsActive").boolValue == true)
-                        foreach (var visualizer in m_ThingVisualizers)
-                            visualizer.OnSceneGUI(sceneView, container);
+                    try
+                    {
+                        SerializedObject so = new SerializedObject(container.gameObject);
+                        if (so.FindProperty("m_IsActive").boolValue == true)
+                            foreach (var visualizer in m_ThingVisualizers)
+                                visualizer.OnSceneGUI(sceneView, container);
+                    }
+                    catch (Exception) { }
                   
                 }
             }
