@@ -4,6 +4,7 @@ using System;
 using UnityEditor;
 using System.Linq;
 using Assets.Scripts.Util;
+using UnityEngine;
 
 namespace ilodev.stationeersmods.tools.diagnostics
 {
@@ -26,10 +27,16 @@ namespace ilodev.stationeersmods.tools.diagnostics
         private IThingEditor[] m_afterEditors;
 
         /// <summary>
+        /// Cache for contextual menu handlers.
+        /// </summary>
+        private static PropertyContextMenuRegistry contextMenuDict;
+
+        /// <summary>
         /// Register itself to the Editor update event.
         /// </summary>
         private void OnEnable()
         {
+            CollectPropertyHandlers();
             CollectEditors();
             OnEnableEditors();
             EditorApplication.update += OnUpdateEditors;
@@ -38,6 +45,8 @@ namespace ilodev.stationeersmods.tools.diagnostics
 
         private void OnPropertyContextMenu(GenericMenu menu, SerializedProperty property)
         {
+            contextMenuDict.ExecuteHandlers(menu, property, target);
+
             foreach (var visualizer in m_beforeEditors)
                 if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
                     visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
@@ -45,6 +54,20 @@ namespace ilodev.stationeersmods.tools.diagnostics
             foreach (var visualizer in m_afterEditors)
                 if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
                     visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
+        }
+
+        private void CollectPropertyHandlers()
+        {
+            contextMenuDict = new PropertyContextMenuRegistry();
+
+            var handlerTypes = TypeCache.GetTypesDerivedFrom<IPropertyContextMenuHandler>();
+            foreach (var type in handlerTypes)
+            {
+                if (Activator.CreateInstance(type) is IPropertyContextMenuHandler handler)
+                {
+                    handler.Register(contextMenuDict);
+                }
+            }
         }
 
         private void CollectEditors()
