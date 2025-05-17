@@ -39,6 +39,8 @@ namespace ilodev.stationeersmods.tools.diagnostics
 
             registry.RegisterHandler("Thumbnail", ThumbnailGeneratorHandler);
 
+            registry.RegisterHandler("Thumbnails", PaintableThumbnailGeneratorHandler);
+
         }
 
         private void ThumbnailHandler(GenericMenu menu, SerializedProperty property, Object target)
@@ -81,6 +83,18 @@ namespace ilodev.stationeersmods.tools.diagnostics
                     EditorUtility.SetDirty(thing);
 
                     ThumbnailRenderer.CaptureThumbnail(thing);
+                });
+            }
+        }
+
+        private void PaintableThumbnailGeneratorHandler(GenericMenu menu, SerializedProperty property, Object target)
+        {
+            Thing thing = (Thing)target;
+            if (thing.PaintableMaterial)
+            {
+                menu.AddItem(new GUIContent("Generate color icons"), false, () =>
+                {
+
                 });
             }
         }
