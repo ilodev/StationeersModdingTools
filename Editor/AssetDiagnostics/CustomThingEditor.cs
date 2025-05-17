@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
+using static RootMotion.Demos.Turret;
 
 namespace ilodev.stationeersmods.tools.diagnostics
 {
@@ -176,6 +177,74 @@ namespace ilodev.stationeersmods.tools.diagnostics
             */
 
             return result;
+        }
+
+        public void OnPropertyContextMenu(GenericMenu menu, SerializedProperty property, Object target)
+        {
+            if (target == null)
+                return;
+            Thing thing = target as Thing;
+
+            if (property.name == "Interactables")
+            {
+                menu.AddItem(new GUIContent("Add/Open"), false, () =>
+                {
+                    Debug.Log("Recalculate");
+                });
+                menu.AddItem(new GUIContent("Add/OnOff"), false, () =>
+                {
+                    Debug.Log("Recalculate");
+                });
+            }
+
+
+            if (property.name == "Bounds")
+            {
+                menu.AddItem(new GUIContent("Reset"), false, () =>
+                {
+                    Bounds bounds = property.boundsValue;
+                    bounds.center = Vector3.zero;
+                    bounds.min = Vector3.zero;
+                    bounds.max = Vector3.zero;
+                    thing.Bounds = bounds;
+                    Debug.Log("Reset");
+                });
+                menu.AddItem(new GUIContent("Recalculate"), false, () =>
+                {
+                    Debug.Log("Recalculate");
+                });
+            }
+
+            if (property.name == "Blueprint")
+            {
+                GameObject blueprint = property.objectReferenceValue as GameObject;
+                if (blueprint == null)
+                    menu.AddItem(new GUIContent("Generate Blueprint"), false, () =>
+                    {
+                        Debug.Log("Generate Blueprint");
+                    });
+                else
+                    menu.AddItem(new GUIContent("Regenerate Blueprint"), false, () =>
+                    {
+                        Debug.Log("Regenerate Blueprint");
+                    });
+            }
+
+            if (property.name == "Thumbnail")
+            {
+                GameObject thumbnail = property.objectReferenceValue as GameObject;
+                if (thumbnail == null)
+                    menu.AddItem(new GUIContent("Generate Thumbnail"), false, () =>
+                    {
+                        Debug.Log("Generate Thumbnail");
+                    });
+                else
+                    menu.AddItem(new GUIContent("Regenerate Thumbnail"), false, () =>
+                    {
+                        Debug.Log("Regenerate Thumbnail");
+                    });
+            }
+
         }
 
         private static int ComputeCRC32(string input)

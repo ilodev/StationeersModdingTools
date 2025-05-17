@@ -33,6 +33,18 @@ namespace ilodev.stationeersmods.tools.diagnostics
             CollectEditors();
             OnEnableEditors();
             EditorApplication.update += OnUpdateEditors;
+            EditorApplication.contextualPropertyMenu += OnPropertyContextMenu;
+        }
+
+        private void OnPropertyContextMenu(GenericMenu menu, SerializedProperty property)
+        {
+            foreach (var visualizer in m_beforeEditors)
+                if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
+                    visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
+
+            foreach (var visualizer in m_afterEditors)
+                if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
+                    visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
         }
 
         private void CollectEditors()
@@ -74,6 +86,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
         {
             OnDisableEditors();
             EditorApplication.update -= OnUpdateEditors;
+            EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;
         }
 
         /// <summary>

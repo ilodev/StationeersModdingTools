@@ -18,7 +18,6 @@ namespace ilodev.stationeersmods.tools.visualizers
         /// </summary>
         private static IThingVisualizer[] m_ThingVisualizers;
 
-
         /// <summary>
         /// Returns a list of available visualizers.
         /// </summary>
@@ -83,7 +82,7 @@ namespace ilodev.stationeersmods.tools.visualizers
                     // In Prefab Mode — only draw objects in the prefab scene.
                     // In this SceneView there is usually one Root object, that
                     // has to match the scene of the game object.
-                    if (container.gameObject.scene != prefabStage.scene)
+                    if (container.gameObject?.scene != prefabStage.scene)
                         continue;
 
                     foreach (var visualizer in m_ThingVisualizers)
