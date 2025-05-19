@@ -1,5 +1,4 @@
 using UnityEditor;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System;
@@ -8,7 +7,12 @@ using UnityEngine;
 namespace ilodev.stationeers.moddingtools.installers
 {
     /// <summary>
-    /// Class to control a constrain for asmdef
+    /// Class to control the constraint for asmdefs in the project. It will look for the 
+    /// 'Assets.Scripts.Objects' namespace in Assembly-CSharp.dll assembly if present and
+    /// enable disable the constraint as necessary.
+    /// 
+    /// TODO: Move the namespace finding into its own class if we ever need a second
+    /// namespace check.
     /// </summary>
     public class OptionalToolAssetPostProcessor : AssetPostprocessor
     {
@@ -18,33 +22,29 @@ namespace ilodev.stationeers.moddingtools.installers
         private static string targetNamespace = "Assets.Scripts.Objects";
 
         /// <summary>
-        /// Check name of assembly. We use this name to reduce the overhead of checking every loaded dll.
+        /// Check namespace only in this assembly.
         /// </summary>
-        private static string assemblyName = "Assembly-CSharp";
+        private static string targetAssembly = "Assembly-CSharp.";
 
         /// <summary>
         /// If the namespace is present, we will force this define for other asmdefs to know they 
         /// can be compiled.
         /// </summary>
         private static string defineSymbol = "STATIONEERS_DLL_PRESENT";  // Define symbol to control the assembly
-      
-        
+
         // Called when an asset is imported or deleted
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            // Check one of the known namespaces
-            bool namespaceExists = IsNamespacePresent(targetNamespace);
-
             // Enable or disable tool based on the namespace existence
-            if (namespaceExists)
+            if (IsNamespacePresent(targetNamespace, targetAssembly))
             {
-                AddDefineSymbol(defineSymbol);
-                // Debug.Log($"{targetNamespace} found. Tool enabled.");
+                if (!IsDefinePresent(defineSymbol))
+                    AddDefineSymbol(defineSymbol);
             }
             else
             {
-                RemoveDefineSymbol(defineSymbol);
-                // Debug.Log($"{targetNamespace} not found. Tool disabled.");
+                if (IsDefinePresent(defineSymbol))
+                    RemoveDefineSymbol(defineSymbol);
             }
         }
 
@@ -52,16 +52,18 @@ namespace ilodev.stationeers.moddingtools.installers
         /// Checks if a namespace is present in the loaded assemblies.
         /// </summary>
         /// <param name="namespaceName"></param>
-        /// <returns></returns>
-        public static bool IsNamespacePresent(string namespaceName)
+        /// <returns>bool true if namespace is found</returns>
+        public static bool IsNamespacePresent(string namespaceName, string filter = null)
         {
             // Get all assemblies loaded in the editor
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies(); 
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             foreach (var assembly in assemblies)
             {
-                if (assembly.GetName().Name != assemblyName)
-                    continue;
+                // looking for a particular assembly name
+                if (filter != null)
+                    if (assembly.FullName.StartsWith(filter))
+                        continue;
 
                 try
                 {
@@ -71,14 +73,14 @@ namespace ilodev.stationeers.moddingtools.installers
                     // Check if any type belongs to the specified namespace
                     if (types.Any(t => t.Namespace == namespaceName))
                     {
-                        // Debug.Log($"Assembly: {assembly}");
+                        // Debug.Log($"Namespace found in Assembly: {assembly}");
                         return true; // Namespace is found
                     }
                 }
-                catch (ReflectionTypeLoadException)
+                catch (ReflectionTypeLoadException e)
                 {
                     // Ignore any assemblies that fail to load types
-                    // Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
+                    Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
                 }
             }
 
@@ -94,16 +96,12 @@ namespace ilodev.stationeers.moddingtools.installers
             var buildTargetGroup = BuildTargetGroup.Standalone;
             var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
-            // Only add the symbol if it doesn't already exist
-            if (!defines.Contains(define))
-            {
-                defines = string.IsNullOrEmpty(defines) ? define : defines + ";" + define;
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, defines);
-                Debug.Log($"Added project level define: {define}");
+            defines = string.IsNullOrEmpty(defines) ? define : defines + ";" + define;
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, defines);
+            Debug.Log($"Added project level define: {define}");
 
-                // Force an script reload
-                EditorUtility.RequestScriptReload();
-            }
+            // Force an script reload
+            EditorUtility.RequestScriptReload();
         }
 
         /// <summary>
@@ -115,16 +113,25 @@ namespace ilodev.stationeers.moddingtools.installers
             var buildTargetGroup = BuildTargetGroup.Standalone;
             var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
-            // Only remove the symbol if it exists
-            if (defines.Contains(define))
-            {
-                defines = string.Join(";", defines.Split(';').Where(d => d != define));
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, defines);
-                Debug.Log($"Removed project level define: {define}");
+            defines = string.Join(";", defines.Split(';').Where(d => d != define));
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, defines);
+            Debug.Log($"Removed project level define: {define}");
 
-                // Force an script reload
-                EditorUtility.RequestScriptReload();
-            }
+            // Force an script reload
+            EditorUtility.RequestScriptReload();
         }
+
+        /// <summary>
+        /// Check if a define by name is present
+        /// </summary>
+        /// <param name="define"></param>
+        /// <returns></returns>
+        public static bool IsDefinePresent(string define, BuildTargetGroup targetGroup = BuildTargetGroup.Standalone)
+        {
+            var buildTargetGroup = targetGroup;
+            var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+            return defines.Contains(define);
+        }
+
     }
 }
