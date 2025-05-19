@@ -18,20 +18,16 @@ namespace ilodev.stationeers.moddingtools.installers
         private static string targetNamespace = "Assets.Scripts.Objects";
 
         /// <summary>
-        /// DLL file check. We use this dll modify the self-reference bit.
+        /// Check name of assembly. We use this name to reduce the overhead of checking every loaded dll.
         /// </summary>
-        private static string dllPath = "Assets/Assemblies/Assembly-CSharp.dll";  // Path to the DLL
+        private static string assemblyName = "Assembly-CSharp";
 
         /// <summary>
         /// If the namespace is present, we will force this define for other asmdefs to know they 
         /// can be compiled.
         /// </summary>
-        private static string defineSymbol = "STATIONEERS_DLL";  // Define symbol to control the assembly
-
-        // Should we check for the dll file as well
-        private static bool DllCheck = false;
-
-        
+        private static string defineSymbol = "STATIONEERS_DLL_PRESENT";  // Define symbol to control the assembly
+      
         
         // Called when an asset is imported or deleted
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -50,23 +46,6 @@ namespace ilodev.stationeers.moddingtools.installers
                 RemoveDefineSymbol(defineSymbol);
                 // Debug.Log($"{targetNamespace} not found. Tool disabled.");
             }
-
-            // Check if the DLL was added or removed
-            if (DllCheck == true)
-            {
-                bool dllExists = File.Exists(dllPath);
-
-                // If DLL exists or is newly added, ensure the define is added
-                if (dllExists)
-                {
-                    AddDefineSymbol(defineSymbol);
-                }
-                // If DLL is removed, ensure the define is removed
-                else
-                {
-                    RemoveDefineSymbol(defineSymbol);
-                }
-            }
         }
 
         /// <summary>
@@ -81,6 +60,9 @@ namespace ilodev.stationeers.moddingtools.installers
 
             foreach (var assembly in assemblies)
             {
+                if (assembly.GetName().Name != assemblyName)
+                    continue;
+
                 try
                 {
                     // Get all types in the assembly
