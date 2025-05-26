@@ -5,7 +5,7 @@ using Assets.Scripts.Objects;
 using System.Text;
 using UnityEditor;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     public class ThingInteractablesPropertyHandler : IPropertyContextMenuHandler
     {

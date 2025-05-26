@@ -6,7 +6,7 @@ using System.Linq;
 using Assets.Scripts.Util;
 using UnityEngine;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     /// <summary>
     /// Custom editor class for all classes inheriting Thing. This class will 

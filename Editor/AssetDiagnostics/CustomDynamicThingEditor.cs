@@ -6,7 +6,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     public class CustomDynamicThingEditor : IThingEditor
     {

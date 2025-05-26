@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     public class CustomStructureThingEditor : IThingEditor
     {

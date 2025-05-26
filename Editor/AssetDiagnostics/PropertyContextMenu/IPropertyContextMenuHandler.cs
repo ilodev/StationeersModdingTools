@@ -1,4 +1,4 @@
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     public interface IPropertyContextMenuHandler
     {

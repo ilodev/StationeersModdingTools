@@ -1,6 +1,6 @@
 {
-    "name": "ilodev.stationeersmods.tools.diagnostics",
-    "rootNamespace": "ilodev.stationeersmods.tools.diagnostics",
+    "name": "ilodev.stationeers.moddingtools.diagnostics",
+    "rootNamespace": "ilodev.stationeersmodding.tools.diagnostics",
     "references": [],
     "includePlatforms": [
         "Editor"

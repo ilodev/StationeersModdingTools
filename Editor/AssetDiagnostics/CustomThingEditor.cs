@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using static RootMotion.Demos.Turret;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     public class CustomThingEditor : IThingEditor
     {

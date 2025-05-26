@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ilodev.stationeersmods.tools.diagnostics
+namespace ilodev.stationeers.moddingtools.diagnostics
 {
     /// <summary>
     /// When an editor has to be called (before the original, after the original, never both)
