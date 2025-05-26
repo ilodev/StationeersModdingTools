@@ -1,0 +1,26 @@
+{
+    "name": "ilodev.stationeers.moddingtools.exporter",
+    "rootNamespace": "ilodev.stationeers.moddingtools.exporter",
+    "references": [
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Assembly-CSharp.dll",
+        "Assembly-CSharp-firstpass.dll",
+        "BepInEx.dll",
+        "0Harmony.dll",
+        "UniTask.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "STATIONEERS_DLL_PRESENT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -10,6 +10,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
         private Dictionary<int, List<Action<GenericMenu, SerializedProperty, UnityEngine.Object>>> handlers
             = new Dictionary<int, List<Action<GenericMenu, SerializedProperty, UnityEngine.Object>>>();
 
+        // Read only 
         public Dictionary<int, List<Action<GenericMenu, SerializedProperty, UnityEngine.Object>>> Handlers => handlers;
 
         public void RegisterHandler(string propertyName, Action<GenericMenu, SerializedProperty, UnityEngine.Object> action)
@@ -29,9 +30,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
             if (handlers.TryGetValue(hash, out var list))
             {
                 foreach (var action in list)
-                {
                     action(menu, property, target);
-                }
             }
         }
     }

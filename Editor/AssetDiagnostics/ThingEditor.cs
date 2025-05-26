@@ -29,7 +29,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
         /// <summary>
         /// Cache for contextual menu handlers.
         /// </summary>
-        private static PropertyContextMenuRegistry contextMenuDict;
+        private static PropertyContextMenuRegistry m_contextMenuDict;
 
         /// <summary>
         /// Register itself to the Editor update event.
@@ -39,33 +39,35 @@ namespace ilodev.stationeersmods.tools.diagnostics
             CollectPropertyHandlers();
             CollectEditors();
             OnEnableEditors();
+
             EditorApplication.update += OnUpdateEditors;
             EditorApplication.contextualPropertyMenu += OnPropertyContextMenu;
         }
 
+        /// <summary>
+        /// Called when right clicking a property in the inspector, we delegate 
+        /// the menu creation to the list of IPropertyContextMenuHandler
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <param name="property"></param>
         private void OnPropertyContextMenu(GenericMenu menu, SerializedProperty property)
         {
-            contextMenuDict.ExecuteHandlers(menu, property, target);
-
-            foreach (var visualizer in m_beforeEditors)
-                if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
-                    visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
-
-            foreach (var visualizer in m_afterEditors)
-                if (visualizer.GetType().GetMethod("OnPropertyContextMenu") != null)
-                    visualizer.GetType().GetMethod("OnPropertyContextMenu").Invoke(visualizer, new object[] { menu, property, target });
+            m_contextMenuDict.ExecuteHandlers(menu, property, target);
         }
 
+        /// <summary>
+        /// Collects a list of IPropertyContextMenuHandler to show on the *Thing inspector
+        /// </summary>
         private void CollectPropertyHandlers()
         {
-            contextMenuDict = new PropertyContextMenuRegistry();
+            m_contextMenuDict = new PropertyContextMenuRegistry();
 
             var handlerTypes = TypeCache.GetTypesDerivedFrom<IPropertyContextMenuHandler>();
             foreach (var type in handlerTypes)
             {
                 if (Activator.CreateInstance(type) is IPropertyContextMenuHandler handler)
                 {
-                    handler.Register(contextMenuDict);
+                    handler.Register(m_contextMenuDict);
                 }
             }
         }

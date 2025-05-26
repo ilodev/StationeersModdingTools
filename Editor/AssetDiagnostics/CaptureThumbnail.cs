@@ -10,7 +10,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
 {
     public static class ThumbnailRenderer
     {
-        public static void CaptureThumbnail(Assets.Scripts.Objects.Thing thing, int resolution = 512)
+        public static void CaptureThumbnail(Assets.Scripts.Objects.Thing thing, int resolution = 256)
         {
             // Create a parent container to hide temp objects from hierarchy and prevent saving
             var container = new GameObject("ThumbnailCaptureContainer");
@@ -70,7 +70,7 @@ namespace ilodev.stationeersmods.tools.diagnostics
             // Cleanup
             RenderTexture.active = null;
             rt.Release();
-            Object.DestroyImmediate(rt);
+            //Object.DestroyImmediate(rt);
             Object.DestroyImmediate(container);
 
             string assetPath = Path.Combine("Assets/Textures/", thing.name + "_Thumbnail.png");
