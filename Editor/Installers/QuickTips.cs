@@ -1,18 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEditor;
 using UnityEngine;
 
 namespace ilodev.stationeers.moddingtools.installers
 {
-    /// <summary>
-    /// Class used to summarize missing dependencies or actions for A modding project.
-    /// </summary>
     public class QuickTipsWindow : EditorWindow
     {
         private Vector2 scrollPos;
+        private bool showAssemblies;
+
+        string[] targetAssemblies = {
+            "Assembly-CSharp",
+            "0Harmony",
+            "BepInEx",
+            "Unity.Mathematics",
+            "Unity.Collections",
+            "Unity.Burst",
+        };
 
         [MenuItem("Window/Stationeers Modding Tools/QuickTips")]
         public static void ShowWindow()
@@ -22,22 +30,17 @@ namespace ilodev.stationeers.moddingtools.installers
 
         private void OnGUI()
         {
-            GUILayout.Label("Next steps to make a Stationeers Mod", EditorStyles.boldLabel);
+            GUILayout.Label("QuickTips for MyPackage", EditorStyles.boldLabel);
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-            // Make sure the game libraries are available.
-            CheckForGameAssemblies();
+            // Are we missing any assembly required for the project.
+            ShowLoadedAssemblies();
 
-            // Check for missing packages
-            CheckForMissingPackages();
+            // Do we have an asmdef in our Assets/ folder.
+            ShowAsmdef();
 
-            // If mod settings are not present then suggest making one
-            CheckForModSettings();
-
-            EditorGUILayout.HelpBox("Tip 1: You can access XYZ via the Tools menu.", MessageType.Info);
-            EditorGUILayout.HelpBox("Tip 2: Remember to set up your layers before using ABC.", MessageType.Info);
-            EditorGUILayout.HelpBox("Tip 3: Use the shortcut Ctrl+Alt+M to toggle feature DEF.", MessageType.Info);
+            EditorGUILayout.HelpBox("Install example assets", MessageType.Info);
 
             EditorGUILayout.EndScrollView();
 
@@ -45,111 +48,101 @@ namespace ilodev.stationeers.moddingtools.installers
             {
                 Close();
             }
-        }
 
-        #region Check for game assemblies, TODO: Refactor this into a shared function
 
-        /// <summary>
-        /// If the namespace is present, we will force this define for other asmdefs to know they 
-        /// can be compiled.
-        /// </summary>
-        private static string defineSymbol = "STATIONEERS_DLL_PRESENT";  // Define symbol to control the assembly
-
-        /// <summary>
-        /// Suggest to install the game libraries if they are not found
-        /// </summary>
-        private void CheckForGameAssemblies()
-        {
-            if (!IsDefinePresent(defineSymbol))
-                EditorGUILayout.HelpBox("Install game assemblies.", MessageType.Error);
         }
 
         /// <summary>
-        /// Check if a define by name is present
-        /// TODO: Separate a custom library (this function is duplicated now)
+        /// Collapsible list of assembles required.
         /// </summary>
-        /// <param name="define"></param>
-        /// <returns></returns>
-        public static bool IsDefinePresent(string define, BuildTargetGroup targetGroup = BuildTargetGroup.Standalone)
+        private void ShowLoadedAssemblies()
         {
-            var buildTargetGroup = targetGroup;
-            var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
-            return defines.Contains(define);
-        }
-        #endregion
+            Color oldColor = GUI.color;
 
-        #region Check for Missing Packages
-        private void CheckForMissingPackages()
-        {
-            // TODO CORRECT THE NAMESPACES REQUIRED
-            // TODO Optionally replace all packages report with a button to install all the missing packages
-            List<string> namespaces = new List<string>
+            bool allAssembliesFound = CheckLoadedAssemblies();
+
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            string assembliesFound = allAssembliesFound ? "All required assemblies found: Ok" : "Missing required assemblies";
+
+            EditorGUILayout.Space();
+        
+            showAssemblies = EditorGUILayout.Foldout(showAssemblies, assembliesFound, true);
+
+            if (showAssemblies)
             {
-                "Unity.Mathematics",
-                "Unity.Collections",
-                "Unity.Burst",
-                "UnityEngine.UI",
-                "TMPro",
-            };
-            foreach (var name in namespaces) {
-                if (!IsNamespacePresent(name))
-                    EditorGUILayout.HelpBox($"Install missing package {name}.", MessageType.Error);
-            }
-        }
-
-        /// <summary>
-        /// Check if a namespace is present in the project: THIS IS A DUPLICATED FUNCTION
-        /// </summary>
-        /// <param name="namespaceName"></param>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public static bool IsNamespacePresent(string namespaceName, string filter = null)
-        {
-            // Get all assemblies loaded in the editor
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
-            {
-                // looking for a particular assembly name
-                if (filter != null)
-                    if (assembly.FullName.StartsWith(filter))
-                        continue;
-
-                try
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                foreach (string assemblyName in targetAssemblies)
                 {
-                    // Get all types in the assembly
-                    var types = assembly.GetTypes();
-
-                    // Check if any type belongs to the specified namespace
-                    if (types.Any(t => t.Namespace == namespaceName))
+                    var assembly = loadedAssemblies.FirstOrDefault(a => a.GetName().Name == assemblyName);
+                    if (assembly != null)
                     {
-                        // Debug.Log($"Namespace found in Assembly: {assembly}");
-                        return true; // Namespace is found
+                        GUI.color = Color.white;
+                        var version = assembly.GetName().Version;
+                        var test = assembly.GetName().FullName;
+                        Debug.Log(assemblyName + " is loaded with version (v" + version + ") (" + test + ")");
+                        GUILayout.Label($"{assemblyName}: {version}", EditorStyles.boldLabel);
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                        Debug.LogWarning(assemblyName + " is not loaded.");
+                        GUILayout.Label($"{assemblyName}: Missing", EditorStyles.boldLabel);
                     }
                 }
-                catch (ReflectionTypeLoadException e)
-                {
-                    // Ignore any assemblies that fail to load types
-                    Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
-                }
+                EditorGUILayout.EndVertical();
+            }
+            GUI.color = oldColor;
+        }
+
+        /// <summary>
+        /// We could cache this, but we want the UI to update so we have to leave it in 
+        /// the OnGUI call.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckLoadedAssemblies()
+        {
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (string assemblyName in targetAssemblies)
+            {
+                var assembly = loadedAssemblies.FirstOrDefault(a => a.GetName().Name == assemblyName);
+                if (assembly == null)
+                    return false;
+            }
+            return true;
+        }
+
+        private void ShowAsmdef()
+        {
+            Color oldColor = GUI.color;
+            EditorGUILayout.Space();
+
+            bool oneAsmdefFound = CheckAsmdefs();
+
+            string asmdefFound = oneAsmdefFound ? "At least one Asmdef in your Assets folder: Ok" : "Missing project Assembly definition";
+
+            if (oneAsmdefFound)
+            {
+                GUI.color = Color.white;
+            }
+            else
+            {
+                GUI.color = Color.red;
+            }
+            GUILayout.Label(asmdefFound, EditorStyles.boldLabel);
+            GUI.color = oldColor;
+        }
+
+        private bool CheckAsmdefs() {
+
+            string[] guids = AssetDatabase.FindAssets("t:AssemblyDefinitionAsset", new[] { "Assets" });
+            if (guids.Length == 0)
+            {
+                return false;
             }
 
-            return false; // Namespace not found
-        }
-
-
-        #endregion
-
-        #region Check for Mod Settings
-        private void CheckForModSettings()
-        {
-            if (!IsDefinePresent(defineSymbol))
-                return;
-
-            EditorGUILayout.HelpBox("Define mod settings.", MessageType.Error);
-        }
-        #endregion
-
+            return true;
+         }
 
     }
 }

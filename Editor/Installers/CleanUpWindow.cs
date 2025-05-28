@@ -14,7 +14,7 @@ namespace ilodev.stationeers.moddingtools.installers
         private bool removeEmptyFolders = true;
         private bool noResults = false;
 
-        [MenuItem("Tools/Clean Up Window")]
+        [MenuItem("Window/Stationeers Modding Tools/Clean Up Window")]
         public static void ShowWindow()
         {
             GetWindow<CleanUpWindow>("Clean Up");
