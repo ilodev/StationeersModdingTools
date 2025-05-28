@@ -123,6 +123,7 @@ namespace ilodev.stationeers.moddingtools.installers
 
         /// <summary>
         /// Check if a define by name is present
+        /// TODO: Separate a custom library (this function is duplicated now)
         /// </summary>
         /// <param name="define"></param>
         /// <returns></returns>
