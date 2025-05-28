@@ -15,16 +15,17 @@ namespace ilodev.stationeers.moddingtools.installers
         [MenuItem("Tools/Install Required Packages")]
         public static void InstallPackages()
         {
-            if (EditorUtility.DisplayDialog("Install Packages",
+            if (EditorUtility.DisplayDialog(
+                "Install Packages",
                 "This will install required packages. Continue?", "Yes", "Cancel"))
             {
                 packagesToInstall = new List<string>
-            {
-                "com.unity.mathematics",
-                "com.unity.collections",
-                "com.unity.textmeshpro",
-                "com.unity.ugui",
-            };
+                {
+                    "com.unity.mathematics",
+                    "com.unity.collections",
+                    "com.unity.textmeshpro",
+                    "com.unity.ugui",
+                };
 
                 currentIndex = 0;
                 InstallNextPackage();

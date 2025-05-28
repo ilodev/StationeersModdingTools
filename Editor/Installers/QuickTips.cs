@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,6 +29,9 @@ namespace ilodev.stationeers.moddingtools.installers
             // Make sure the game libraries are available.
             CheckForGameAssemblies();
 
+            // Check for missing packages
+            CheckForMissingPackages();
+
             // If mod settings are not present then suggest making one
             CheckForModSettings();
 
@@ -42,11 +48,6 @@ namespace ilodev.stationeers.moddingtools.installers
         }
 
         #region Check for game assemblies, TODO: Refactor this into a shared function
-
-        /// <summary>
-        /// Check namespace only in this assembly.
-        /// </summary>
-        private static string targetAssembly = "Assembly-CSharp.";
 
         /// <summary>
         /// If the namespace is present, we will force this define for other asmdefs to know they 
@@ -75,6 +76,68 @@ namespace ilodev.stationeers.moddingtools.installers
             var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
             return defines.Contains(define);
         }
+        #endregion
+
+        #region Check for Missing Packages
+        private void CheckForMissingPackages()
+        {
+            // TODO CORRECT THE NAMESPACES REQUIRED
+            // TODO Optionally replace all packages report with a button to install all the missing packages
+            List<string> namespaces = new List<string>
+            {
+                "Unity.Mathematics",
+                "Unity.Collections",
+                "Unity.Burst",
+                "UnityEngine.UI",
+                "TMPro",
+            };
+            foreach (var name in namespaces) {
+                if (!IsNamespacePresent(name))
+                    EditorGUILayout.HelpBox($"Install missing package {name}.", MessageType.Error);
+            }
+        }
+
+        /// <summary>
+        /// Check if a namespace is present in the project: THIS IS A DUPLICATED FUNCTION
+        /// </summary>
+        /// <param name="namespaceName"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public static bool IsNamespacePresent(string namespaceName, string filter = null)
+        {
+            // Get all assemblies loaded in the editor
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (var assembly in assemblies)
+            {
+                // looking for a particular assembly name
+                if (filter != null)
+                    if (assembly.FullName.StartsWith(filter))
+                        continue;
+
+                try
+                {
+                    // Get all types in the assembly
+                    var types = assembly.GetTypes();
+
+                    // Check if any type belongs to the specified namespace
+                    if (types.Any(t => t.Namespace == namespaceName))
+                    {
+                        // Debug.Log($"Namespace found in Assembly: {assembly}");
+                        return true; // Namespace is found
+                    }
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    // Ignore any assemblies that fail to load types
+                    Debug.LogWarning($"Failed to load types from assembly {assembly.FullName}. Error: {e.Message}");
+                }
+            }
+
+            return false; // Namespace not found
+        }
+
+
         #endregion
 
         #region Check for Mod Settings

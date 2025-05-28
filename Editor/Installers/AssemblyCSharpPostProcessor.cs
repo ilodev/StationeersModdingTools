@@ -49,7 +49,7 @@ namespace ilodev.stationeers.moddingtools.installers
         }
 
         /// <summary>
-        /// Checks if a namespace is present in the loaded assemblies.
+        /// Checks if a namespace is present in the loaded assemblies. THIS FUNCTION IS DUPLICATED NOW
         /// </summary>
         /// <param name="namespaceName"></param>
         /// <returns>bool true if namespace is found</returns>
