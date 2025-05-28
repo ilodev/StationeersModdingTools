@@ -142,7 +142,7 @@ namespace ilodev.stationeers.moddingtools.installers
             }
 
             return true;
-         }
+        }
 
     }
 }
