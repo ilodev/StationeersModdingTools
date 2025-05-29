@@ -38,9 +38,8 @@ namespace ilodev.stationeers.moddingtools.diagnostics
         public void ExecuteHandlers(GenericMenu menu, SerializedProperty property, UnityEngine.Object target)
         {
             // Remove any trailing /[.*/] from the name first.
-
             int hash = CleanPropertyPath(property.propertyPath).GetHashCode(); // property.name.GetHashCode();
-            Debug.Log($"Registry calling handlers for {property.propertyPath}");
+            // Debug.Log($"Registry calling handlers for {property.propertyPath}");
             if (handlers.TryGetValue(hash, out var list))
             {
                 foreach (var action in list)

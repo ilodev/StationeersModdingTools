@@ -4,7 +4,6 @@ using System;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using static RootMotion.Demos.Turret;
 
 namespace ilodev.stationeersmodding.tools.diagnostics
 {
@@ -53,13 +52,18 @@ namespace ilodev.stationeersmodding.tools.diagnostics
             {
                 Thing thing = (Thing)target;
 
+                menu.AddItem(new GUIContent("Autopopulate slots from hierarchy"), false, () =>
+                {
+                    ///TODO: LOOP THROUGH ALL 
+                    EditorUtility.SetDirty(thing);
+                });
 
 
 
                 if (thing.Slots.Count == 0)
                     return;
 
-                menu.AddItem(new GUIContent("Autopopulate from: Name"), false, () =>
+                menu.AddItem(new GUIContent("Autopopulate slots from: Name"), false, () =>
                 {
                     foreach(var slot in thing.Slots)
                     {
@@ -68,7 +72,7 @@ namespace ilodev.stationeersmodding.tools.diagnostics
                     EditorUtility.SetDirty(thing);
                 });
 
-                menu.AddItem(new GUIContent("Autopopulate from: Type"), false, () =>
+                menu.AddItem(new GUIContent("Autopopulate slots from: Type"), false, () =>
                 {
                     foreach (var slot in thing.Slots)
                     {
@@ -143,6 +147,8 @@ namespace ilodev.stationeersmodding.tools.diagnostics
             // If size is not set, find by collider
             if (slot.Collider != null)
                 slot.Size = slot.Collider.size;
+
+            // TODO: What to do with the action?
 
         }
 
