@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using static RootMotion.Demos.Turret;
 
 namespace ilodev.stationeersmodding.tools.diagnostics
 {
@@ -30,6 +31,14 @@ namespace ilodev.stationeersmodding.tools.diagnostics
                         BaseConnectionSetup(thing, connection);
                         EditorUtility.SetDirty(thing);
                     });
+
+                if (connection.ConnectionType != NetworkType.None)
+                    menu.AddItem(new GUIContent("Create transform"), false, () =>
+                    {
+                        BaseConnectionCreate(thing, connection);
+                        EditorUtility.SetDirty(thing);
+                    });
+
 
                 if (connection.ConnectionType != NetworkType.None)
                 {
@@ -109,6 +118,16 @@ namespace ilodev.stationeersmodding.tools.diagnostics
             collider.radius = 0.12f;
             collider.isTrigger = true;
             connection.Collider = collider;
+        }
+
+        void BaseConnectionCreate(SmallGrid thing, Connection connection)
+        {
+            string name = "SphereCollider"+ connection.ConnectionType.ToString() + "Connection" + connection.ConnectionRole.ToString() + "Trigger";
+            Transform transform = new GameObject(name).transform;
+            transform.SetParent(thing.transform);
+            transform.localPosition = Vector3.zero;
+            EditOrCreateConnection(thing, connection.ConnectionType, connection.ConnectionRole, transform);
+
         }
 
         private int GetArrayIndex(SerializedProperty property)
