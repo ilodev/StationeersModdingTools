@@ -50,7 +50,7 @@ namespace ilodev.stationeers.moddingtools.diagnostics
 
             });
 
-                registry.RegisterHandler("Blueprint", BlueprintGeneratorHandler);
+            registry.RegisterHandler("Blueprint", BlueprintGeneratorHandler);
 
             registry.RegisterHandler("ThumbnailOffset", ThumbnailHandler);
             registry.RegisterHandler("ThumbnailRotation", ThumbnailHandler);
