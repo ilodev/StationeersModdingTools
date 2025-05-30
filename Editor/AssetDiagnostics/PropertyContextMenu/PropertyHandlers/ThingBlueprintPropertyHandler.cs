@@ -37,7 +37,8 @@ namespace ilodev.stationeersmodding.tools.diagnostics
             var renderer = blueprintGO.AddComponent<MeshRenderer>();
 
             string newNamespace = FindFirstAsmdefNamespace();
-            string fullTypeName = newNamespace + "Wireframe";
+            string fullTypeName = newNamespace + ".Wireframe";
+
             Type type = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
                 .FirstOrDefault(t => t.FullName == fullTypeName);
