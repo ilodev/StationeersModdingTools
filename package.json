@@ -18,6 +18,12 @@
         "displayName": "Sample Resources",
         "description": "Contains authored materials and other game-alike resources.",
         "path": "Samples~/SamplesResources"
+    },
+    {
+        "displayName": "Example Assets",
+        "description": "Documented working game assets to serve as examples and templates.",
+        "path": "Samples~/ExampleAssets"
     }
+
   ]
 }
