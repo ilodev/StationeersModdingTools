@@ -36,7 +36,8 @@ namespace ilodev.stationeersmodding.tools.diagnostics
             var filter = blueprintGO.AddComponent<MeshFilter>();
             var renderer = blueprintGO.AddComponent<MeshRenderer>();
 
-            string fullTypeName = "ilodev.stationeers.turbinegenerator.Wireframe";
+            string newNamespace = FindFirstAsmdefNamespace();
+            string fullTypeName = newNamespace + "Wireframe";
             Type type = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
                 .FirstOrDefault(t => t.FullName == fullTypeName);
@@ -67,6 +68,43 @@ namespace ilodev.stationeersmodding.tools.diagnostics
 
             // Return prefab reference if needed
             return prefab;
+        }
+
+        private string FindFirstAsmdefNamespace()
+        {
+            try
+            {
+                string[] guids = AssetDatabase.FindAssets("t:AssemblyDefinitionAsset", new[] { "Assets" });
+                if (guids.Length > 0)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                    string json = File.ReadAllText(path);
+                    return GetRootNamespaceFromJson(json);
+                }
+            }
+            catch (Exception) { }
+            return null;
+        }
+
+        private static string GetRootNamespaceFromJson(string json)
+        {
+            const string key = "\"rootNamespace\":";
+            int index = json.IndexOf(key);
+
+            if (index >= 0)
+            {
+                int startIndex = index + key.Length;
+                int endIndex = json.IndexOf(",", startIndex);
+                if (endIndex == -1) endIndex = json.IndexOf("}", startIndex);
+
+                if (endIndex > startIndex)
+                {
+                    string value = json.Substring(startIndex, endIndex - startIndex).Trim().Trim('"');
+                    return value;
+                }
+            }
+
+            return null;
         }
     }
 }
