@@ -1,7 +1,9 @@
 {
     "name": "ilodev.stationeers.moddingtools.diagnostics",
-    "rootNamespace": "ilodev.stationeersmodding.tools.diagnostics",
-    "references": [],
+    "rootNamespace": "ilodev.stationeers.moddingtools.diagnostics",
+    "references": [
+        "GUID:5232910cd0e4eb6418278f63d31c042c"
+    ],
     "includePlatforms": [
         "Editor"
     ],

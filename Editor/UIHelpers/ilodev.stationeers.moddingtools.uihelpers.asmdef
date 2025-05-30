@@ -1,6 +1,6 @@
 {
-    "name": "ilodev.stationeersmods.tools.uihelpers",
-    "rootNamespace": "ilodev.stationeersmods.tools.uihelpers",
+    "name": "ilodev.stationeers.moddingtools.uihelpers",
+    "rootNamespace": "ilodev.stationeers.moddingtools.uihelpers",
     "references": [],
     "includePlatforms": [
         "Editor"
